@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  :root { --red: #ff0000; --black: #000000; --card: #1a1a1a; --text: #ffffff; }
+  
+  body { 
+    background-color: var(--black); 
+    color: var(--text); 
+    font-family: 'Segoe UI', Impact, sans-serif; 
+    margin: 0; padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* Fixed Navigation Bar */
+  .navbar {
+    background: #000;
+    border-bottom: 3px solid var(--red);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .logo { 
+    color: var(--red); 
+    font-size: 24px; 
+    font-weight: 900; 
+    text-transform: uppercase; 
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+
+  .nav-links span {
+    color: #888;
+    margin-left: 20px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+  }
+
+  .nav-links span:hover { color: var(--red); }
+
+  /* Page Content Handling */
+  .page { display: none; padding: 20px; max-width: 1000px; margin: 0 auto; }
+  .active { display: block; animation: fadeIn 0.4s; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* Roblox-style Cards */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #333;
+    margin-bottom: 20px;
+  }
+
+  .btn-red {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    text-transform: uppercase;
+  }
+
+  .avatar-preview {
+    width: 150px;
+    height: 150px;
+    background: #222;
+    border: 2px solid var(--red);
+    border-radius: 10px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<div class="navbar">
+  <div class="logo" onclick="showPage('home')">GOblocks</div>
+  <div class="nav-links">
+    <span onclick="showPage('home')">Home</span>
+    <span onclick="showPage('discover')">Discover</span>
+    <span onclick="showPage('avatar')">Avatar</span>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="home" class="page active">
+  <div class="card">
+    <h2 style="color: var(--red); margin-top: 0;">Welcome, Player</h2>
+    <p>Everything is red. Join the grid today.</p>
+    <button class="btn-red" onclick="showPage('discover')">Find Friends</button>
+  </div>
+  <div class="card">
+    <h4>Recent Activity</h4>
+    <p style="color: #666;">No new updates from Team c00lkidd.</p>
+  </div>
+</div>
+
+<!-- DISCOVER PAGE -->
+<div id="discover" class="page">
+  <h2 style="color: var(--red);">People</h2>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <div class="card" style="text-align:center;">
+      <div class="avatar-preview">🔴</div>
+      <b>c00lkidd_Fan</b>
+      <button class="btn-red" style="margin-top:10px; font-size:10px;">Add Friend</button>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div class="avatar-preview">🔴</div>
+      <b>Red_Hacker</b>
+      <button class="btn-red" style="margin-top:10px; font-size:10px;">Add Friend</button>
+    </div>
+  </div>
+</div>
+
+<!-- AVATAR PAGE -->
+<div id="avatar" class="page">
+  <h2 style="color: var(--red);">Avatar Editor</h2>
+  <div class="card">
+    <div class="avatar-preview">
+       <!-- Replace with your c00lkidd image URL -->
+       <img src="https://tr.rbxcdn.com" style="width:100%">
+    </div>
+    <p style="text-align:center;">Currently Wearing: <b>Team c00lkidd Shirt</b></p>
+    <button class="btn-red">Change Outfit</button>
+  </div>
+</div>
+
+<script>
+  function showPage(pageId) {
+    // Hide all pages
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p => p.classList.remove('active'));
+    
+    // Show the clicked page
+    document.getElementById(pageId).classList.add('active');
+    
+    // Scroll to top
+    window.scrollTo(0,0);
+  }
+</script>
+
+</body>
+</html>
