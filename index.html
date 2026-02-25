@@ -3,264 +3,454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOblocks | Dashboard</title>
+    <title>GOblocks | Project Alpha</title>
+    <!-- Importing a clean, bold font stack -->
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
+        /* --- CORE DESIGN SYSTEM --- */
         :root {
-            --bg: #111216; /* True Roblox Dark */
-            --card: #212229;
-            --nav: #000000;
-            --border: #393b4a;
-            --accent: #ffffff;
-            --blue: #0084ff;
-            --skin: #ffdbac;
-            --sidebar-w: 220px;
+            --bg-main: #0b0c10;
+            --bg-panel: #1b1c22;
+            --bg-nav: #000000;
+            --border-primary: #31333f;
+            --text-bright: #ffffff;
+            --text-muted: #919191;
+            --accent-blue: #0084ff;
+            --accent-green: #00e676;
+            --accent-red: #ff3d00;
+            --sidebar-width: 260px;
+            
+            /* Dynamic Skin Variable */
+            --skin-hex: #ffdbac; 
         }
+
+        * { box-sizing: border-box; transition: all 0.2s ease; }
 
         body {
-            background-color: var(--bg);
-            color: #fff;
-            font-family: "HCo Gotham SSm", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            margin: 0; padding: 0; overflow-x: hidden;
+            background-color: var(--bg-main);
+            color: var(--text-bright);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
 
-        /* --- MANDATORY AUTH WALL --- */
-        #auth-overlay {
-            position: fixed; inset: 0; background: #000; z-index: 10000;
-            display: flex; align-items: center; justify-content: center;
+        /* --- AUTHENTICATION GATEWAY --- */
+        #gatekeeper {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, #1b1c22 0%, #000 100%);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .auth-card {
-            background: var(--card); padding: 50px; border: 1px solid var(--border);
-            width: 400px; border-radius: 8px; text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+
+        .auth-box {
+            background: var(--bg-panel);
+            padding: 60px;
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            width: 450px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
-        .auth-card h1 { font-size: 32px; font-weight: 900; margin-bottom: 30px; letter-spacing: -1px; }
+
+        .auth-box h1 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+        }
+
+        .auth-tagline { color: var(--text-muted); margin-bottom: 40px; font-size: 14px; }
+
+        .form-group { margin-bottom: 25px; text-align: left; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; }
+
         .auth-input {
-            width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 4px;
-            background: #000; border: 1px solid var(--border); color: #fff; font-size: 16px;
-        }
-        .btn-blue {
-            width: 100%; padding: 15px; background: var(--blue); color: #fff;
-            border: none; border-radius: 4px; font-weight: 800; cursor: pointer;
-        }
-
-        /* --- GLOBAL NAVIGATION --- */
-        .navbar {
-            background: var(--nav); height: 50px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 25px; position: sticky; top: 0; z-index: 1000;
-        }
-        .logo { font-weight: 900; font-size: 22px; cursor: pointer; color: #fff; text-decoration: none; margin-right: 40px; }
-        .nav-search {
-            flex: 1; max-width: 400px; position: relative;
-        }
-        .nav-search input {
-            width: 100%; background: #1a1b20; border: 1px solid var(--border);
-            padding: 8px 12px; border-radius: 4px; color: #fff; font-size: 14px;
+            width: 100%;
+            padding: 16px;
+            background: #000;
+            border: 1px solid var(--border-primary);
+            color: #fff;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
         }
 
-        /* --- APP CONTENT LAYOUT --- */
-        .main-wrapper { display: flex; min-height: calc(100vh - 50px); display: none; }
-        .active-session { display: flex; }
+        .auth-input:focus { border-color: var(--accent-blue); }
 
-        /* Left Sidebar */
-        .sidebar {
-            width: var(--sidebar-w); background: var(--bg); border-right: 1px solid var(--border);
-            padding: 20px 10px; display: flex; flex-direction: column; gap: 5px;
+        .btn-prime {
+            width: 100%;
+            padding: 18px;
+            background: var(--text-bright);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-weight: 900;
+            font-size: 13px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .side-link {
-            padding: 12px 15px; border-radius: 4px; font-weight: 600; font-size: 14px;
-            color: #bdbebe; cursor: pointer; transition: 0.2s; display: flex; align-items: center;
+
+        .btn-prime:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,255,255,0.2); }
+
+        /* --- NAVIGATION ARCHITECTURE --- */
+        .top-navigation {
+            background: var(--bg-nav);
+            height: 60px;
+            border-bottom: 1px solid var(--border-primary);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        .side-link:hover, .side-active { background: #393b4a; color: #fff; }
-        .side-link i { margin-right: 12px; font-style: normal; }
 
-        /* Content Area */
-        .content-area { flex: 1; padding: 40px; }
-        .page { display: none; animation: fadeIn 0.3s ease; }
-        .page-active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .nav-logo { font-weight: 900; font-size: 24px; cursor: pointer; letter-spacing: -1.5px; margin-right: 60px; }
 
-        /* --- CARDS & PANELS --- */
-        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 30px; margin-bottom: 30px; }
-        .user-welcome { font-size: 28px; font-weight: 800; margin: 0 0 10px 0; }
-
-        /* --- THE AVATAR (BLOCKY WITH LEGS) --- */
-        .avatar-viewport {
-            width: 300px; height: 350px; background: #000; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; position: relative;
-            border: 1px solid var(--border);
+        .search-container { flex: 1; max-width: 600px; position: relative; }
+        .search-container input {
+            width: 100%;
+            background: #151515;
+            border: 1px solid var(--border-primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
         }
-        .character-rig { position: relative; width: 60px; height: 100px; transform: scale(1.5); }
-        .char-head { position: absolute; top: -50px; left: 10px; width: 40px; height: 40px; background: var(--skin); border-radius: 4px; }
-        .char-torso { position: absolute; top: 0; left: 0; width: 60px; height: 75px; background: var(--skin); border-radius: 2px; }
-        .char-leg-l { position: absolute; top: 78px; left: 2px; width: 26px; height: 60px; background: var(--skin); }
-        .char-leg-r { position: absolute; top: 78px; left: 32px; width: 26px; height: 60px; background: var(--skin); }
 
-        /* --- COLOR PICKER --- */
-        .skin-palette { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 25px; }
-        .swatch { height: 45px; border: 2px solid transparent; cursor: pointer; border-radius: 4px; transition: 0.1s; }
-        .swatch:hover { border-color: #fff; }
+        .nav-profile-block { margin-left: auto; display: flex; align-items: center; gap: 30px; }
+        .currency-pill { background: rgba(0,230,118,0.1); color: var(--accent-green); padding: 6px 12px; border-radius: 20px; font-weight: 900; font-size: 12px; border: 1px solid var(--accent-green); }
 
-        /* --- FRIENDS SIDEBAR (RIGHT) --- */
-        .right-bar { width: 300px; border-left: 1px solid var(--border); padding: 40px 20px; }
-        .friend-row { display: flex; align-items: center; padding: 10px 0; gap: 12px; }
-        .friend-pic { width: 40px; height: 40px; background: #000; border-radius: 50%; border: 1px solid var(--border); }
+        /* --- CORE APPLICATION LAYOUT --- */
+        #app-core { display: none; min-height: calc(100vh - 60px); }
+        .view-active { display: flex; }
+
+        .left-sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-nav);
+            border-right: 1px solid var(--border-primary);
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-btn {
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            text-decoration: none;
+        }
+
+        .side-btn:hover, .side-btn.active { background: var(--bg-panel); color: #fff; }
+        .side-btn i { margin-right: 15px; font-style: normal; font-size: 18px; width: 24px; text-align: center; }
+
+        .main-stage { flex: 1; padding: 50px; overflow-y: auto; background: var(--bg-main); }
+
+        .viewport-page { display: none; animation: fadeIn 0.4s ease-out forwards; }
+        .viewport-page.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- DASHBOARD WIDGETS --- */
+        .section-header { font-size: 36px; font-weight: 900; margin-bottom: 40px; display: flex; align-items: center; justify-content: space-between; }
+        
+        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 50px; }
+
+        .widget-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .widget-card h3 { margin: 0 0 15px 0; font-size: 18px; font-weight: 800; color: var(--accent-blue); }
+        .widget-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+        .update-log { margin-top: 20px; }
+        .log-entry { padding: 12px 0; border-bottom: 1px solid #2a2c35; display: flex; gap: 15px; }
+        .log-icon { width: 8px; height: 8px; background: var(--accent-blue); border-radius: 50%; margin-top: 6px; }
+
+        /* --- AVATAR RIG SYSTEM (ARMS, LEGS, HEAD, TORSO) --- */
+        .avatar-workshop { display: flex; gap: 50px; align-items: flex-start; }
+
+        .visualizer {
+            width: 400px;
+            height: 500px;
+            background: radial-gradient(circle at top, #252731 0%, #000 100%);
+            border-radius: 20px;
+            border: 2px solid var(--border-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .block-man-v4 {
+            position: relative;
+            width: 70px;
+            height: 120px;
+            transform: scale(1.6);
+            transform-style: preserve-3d;
+        }
+
+        /* Character Limbs */
+        .char-part { position: absolute; background: var(--skin-hex); border-radius: 2px; border: 1px solid rgba(0,0,0,0.1); }
+        
+        .part-head { top: -55px; left: 12px; width: 46px; height: 46px; border-radius: 4px; z-index: 10; }
+        .part-torso { top: 0; left: 0; width: 70px; height: 95px; border-radius: 2px; }
+        
+        /* Arms (Attached to Torso) */
+        .part-arm-l { top: 0; left: -38px; width: 34px; height: 95px; }
+        .part-arm-r { top: 0; right: -38px; width: 34px; height: 95px; }
+        
+        /* Legs (Attached below Torso) */
+        .part-leg-l { top: 100px; left: 2px; width: 32px; height: 85px; }
+        .part-leg-r { top: 100px; right: 2px; width: 32px; height: 85px; }
+
+        /* --- CUSTOMIZATION CONTROLS --- */
+        .customizer-panel { flex: 1; }
+        .tab-menu { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid var(--border-primary); padding-bottom: 15px; }
+        .tab-item { padding: 10px 20px; font-weight: 800; font-size: 12px; cursor: pointer; color: var(--text-muted); }
+        .tab-item.active { color: var(--accent-blue); }
+
+        .skin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 15px; }
+        .skin-swatch { 
+            height: 60px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+        }
+        .skin-swatch:hover { transform: scale(1.1); border-color: #fff; }
+
+        /* --- MEMBER ACTIVITY FEED --- */
+        .right-activity-bar { width: 320px; background: var(--bg-nav); border-left: 1px solid var(--border-primary); padding: 40px 25px; }
+        .member-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .member-avatar { width: 40px; height: 40px; background: #333; border-radius: 50%; }
+        .member-info b { font-size: 14px; display: block; }
+        .member-info span { font-size: 11px; color: var(--accent-green); }
+
     </style>
 </head>
 <body>
 
-<!-- LOGIN / SIGN UP -->
-<div id="auth-overlay">
-    <div class="auth-card">
-        <h1>GOblocks</h1>
-        <input type="text" id="auth-user" class="auth-input" placeholder="Username">
-        <button class="btn-blue" onclick="system.login()">SIGN UP / LOGIN</button>
-        <p style="color: #666; font-size: 12px; margin-top: 20px;">By clicking, you join the monochrome grid.</p>
-    </div>
-</div>
-
-<!-- TOP NAV -->
-<nav class="navbar">
-    <div class="logo" onclick="system.navigate('home')">GOblocks</div>
-    <div class="nav-search">
-        <input type="text" placeholder="Search Users or Items">
-    </div>
-    <div style="margin-left: auto; display: flex; align-items: center; gap: 20px;">
-        <span style="font-weight: 800; color: #00ff00;">G$ 0</span>
-        <span id="nav-user-name" style="font-weight: 700; font-size: 14px;"></span>
-    </div>
-</nav>
-
-<div class="main-wrapper" id="app-shell">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="side-link side-active" id="link-home" onclick="system.navigate('home')"><i>🏠</i> Home</div>
-        <div class="side-link" id="link-avatar" onclick="system.navigate('avatar')"><i>👤</i> Avatar</div>
-        <div class="side-link"><i>🌎</i> Discover</div>
-        <div class="side-link"><i>🛒</i> Avatar Shop</div>
-        <div style="margin-top: auto;">
-            <div class="side-link" style="color: #ff4444;" onclick="system.logout()"><i>🚪</i> Logout</div>
+    <!-- AUTHENTICATION LAYER -->
+    <div id="gatekeeper">
+        <div class="auth-box">
+            <h1>GOblocks</h1>
+            <div class="auth-tagline">Initialize your grid identity.</div>
+            
+            <div class="form-group">
+                <label>Entity Username</label>
+                <input type="text" id="auth-username" class="auth-input" placeholder="Type name here...">
+            </div>
+            
+            <button class="btn-prime" onclick="Core.beginSession()">Connect to Platform</button>
         </div>
-    </aside>
+    </div>
 
-    <!-- MAIN CONTENT -->
-    <main class="content-area">
-        
-        <!-- HOME PAGE -->
-        <section id="home-page" class="page page-active">
-            <h1 class="user-welcome">Home</h1>
-            <div class="panel">
-                <h2>Hello, <span id="hello-name"></span>!</h2>
-                <p style="color: #bdbebe;">Welcome back to GOblocks. Your ID is verified and your skin tone is synced.</p>
-            </div>
-            <div class="panel">
-                <h3>Global News</h3>
-                <p>• New blocky leg physics added to rig.</p>
-                <p>• System stability improved.</p>
-            </div>
-        </section>
+    <!-- MAIN INTERFACE -->
+    <nav class="top-navigation">
+        <div class="nav-logo" onclick="Core.viewPage('home')">GOblocks</div>
+        <div class="search-container">
+            <input type="text" placeholder="Search characters, items, or groups...">
+        </div>
+        <div class="nav-profile-block">
+            <div class="currency-pill">G$ 1,450</div>
+            <div id="user-display" style="font-weight: 800; font-size: 14px;"></div>
+        </div>
+    </nav>
 
-        <!-- AVATAR PAGE -->
-        <section id="avatar-page" class="page">
-            <h1 class="user-welcome">Avatar Editor</h1>
-            <div style="display: flex; gap: 40px;">
-                <div class="avatar-viewport">
-                    <div class="character-rig">
-                        <div class="char-head"></div>
-                        <div class="char-torso"></div>
-                        <div class="char-leg-l"></div>
-                        <div class="char-leg-r"></div>
+    <div id="app-core">
+        <!-- NAVIGATION SIDEBAR -->
+        <aside class="left-sidebar">
+            <div class="side-btn active" id="btn-home" onclick="Core.viewPage('home')"><i>🏠</i> Home</div>
+            <div class="side-btn" id="btn-avatar" onclick="Core.viewPage('avatar')"><i>👤</i> Avatar Editor</div>
+            <div class="side-btn"><i>🏢</i> Discovery</div>
+            <div class="side-btn"><i>🛒</i> Avatar Shop</div>
+            <div class="side-btn"><i>🛡️</i> Groups</div>
+            <div class="side-btn"><i>⚙️</i> Settings</div>
+            
+            <div style="margin-top: auto;">
+                <div class="side-btn" style="color: var(--accent-red);" onclick="Core.endSession()"><i>🚪</i> Log Out</div>
+            </div>
+        </aside>
+
+        <!-- PAGE CONTENT -->
+        <main class="main-stage">
+            
+            <!-- HOME VIEW -->
+            <section id="page-home" class="viewport-page active">
+                <div class="section-header">
+                    <span>Hello, <span id="span-name"></span>!</span>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="widget-card">
+                        <h3>Status</h3>
+                        <p>Your connection is secure. You are currently visible to friends on the grid.</p>
+                    </div>
+                    <div class="widget-card">
+                        <h3>Active Inventory</h3>
+                        <p>Items: 14<br>Collectibles: 2<br>Limiteds: 0</p>
+                    </div>
+                    <div class="widget-card">
+                        <h3>Notifications</h3>
+                        <p>No pending friend requests at this time.</p>
                     </div>
                 </div>
-                <div style="flex: 1;">
-                    <div class="panel">
-                        <h3>Skin Tone Library</h3>
-                        <p>Select your base identity color:</p>
-                        <div class="skin-palette" id="skin-colors">
-                            <!-- Injected Colors -->
+
+                <div class="widget-card" style="width: 100%;">
+                    <h3>System Logs</h3>
+                    <div class="update-log">
+                        <div class="log-entry">
+                            <div class="log-icon"></div>
+                            <div><b>V4 CHARACTER RIG LOADED</b> - New high-detail limbs (Arms/Legs) deployed.</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-icon"></div>
+                            <div><b>CSS GRID REFACTOR</b> - Layout complexity increased for better desktop view.</div>
+                        </div>
+                        <div class="log-entry">
+                            <div class="log-icon"></div>
+                            <div><b>LOCAL_STORAGE ENGINE</b> - Persistent data save system v2.0 enabled.</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    </main>
+            </section>
 
-    <!-- FRIENDS BAR -->
-    <aside class="right-bar">
-        <h4 style="text-transform: uppercase; color: #666; font-size: 11px; letter-spacing: 1px; margin-bottom: 20px;">Newest Members</h4>
-        <div id="member-list"></div>
-    </aside>
-</div>
+            <!-- AVATAR VIEW -->
+            <section id="page-avatar" class="viewport-page">
+                <div class="section-header">Avatar Editor</div>
+                
+                <div class="avatar-workshop">
+                    <div class="visualizer">
+                        <div class="block-man-v4">
+                            <div class="char-part part-head"></div>
+                            <div class="char-part part-arm-l"></div>
+                            <div class="char-part part-torso"></div>
+                            <div class="char-part part-arm-r"></div>
+                            <div class="char-part part-leg-l"></div>
+                            <div class="char-part part-leg-r"></div>
+                        </div>
+                    </div>
 
-<script>
-    const system = {
-        data: JSON.parse(localStorage.getItem('goblocks_v2')),
-
-        init() {
-            if (this.data) this.enter();
-            this.buildSkinTones();
-            this.buildMembers();
-        },
-
-        login() {
-            const name = document.getElementById('auth-user').value;
-            if (name.length < 3) return alert("Username must be 3+ characters.");
-            this.data = { name, skin: '#ffdbac' };
-            this.save();
-            this.enter();
-        },
-
-        enter() {
-            document.getElementById('auth-overlay').style.display = 'none';
-            document.getElementById('app-shell').classList.add('active-session');
-            document.getElementById('nav-user-name').innerText = this.data.name;
-            document.getElementById('hello-name').innerText = this.data.name;
-            this.applySkin(this.data.skin);
-        },
-
-        navigate(page) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
-            document.querySelectorAll('.side-link').forEach(l => l.classList.remove('side-active'));
-            
-            document.getElementById(page + '-page').classList.add('page-active');
-            document.getElementById('link-' + page).classList.add('side-active');
-        },
-
-        buildSkinTones() {
-            const colors = ['#ffdbac', '#f1c27d', '#e0ac69', '#8d5524', '#ffffff', '#333333', '#111111', '#0084ff', '#ff0000', '#00ff00', '#ffff00', '#ff00ff'];
-            const container = document.getElementById('skin-colors');
-            colors.forEach(c => {
-                const s = document.createElement('div');
-                s.className = 'swatch';
-                s.style.background = c;
-                s.onclick = () => this.applySkin(c);
-                container.appendChild(s);
-            });
-        },
-
-        applySkin(c) {
-            this.data.skin = c;
-            this.save();
-            document.documentElement.style.setProperty('--skin', c);
-        },
-
-        save() { localStorage.setItem('goblocks_v2', JSON.stringify(this.data)); },
-
-        logout() { localStorage.removeItem('goblocks_v2'); location.reload(); },
-
-        buildMembers() {
-            const m = ['System_Bot', 'Vortex', 'MonoMan', 'GridGhost', 'Admin_1'];
-            document.getElementById('member-list').innerHTML = m.map(name => `
-                <div class="friend-row">
-                    <div class="friend-pic"></div>
-                    <span style="font-size:14px; font-weight:700;">${name}</span>
+                    <div class="customizer-panel">
+                        <div class="tab-menu">
+                            <div class="tab-item active">SKIN TONE</div>
+                            <div class="tab-item">CLOTHING</div>
+                            <div class="tab-item">ACCESSORIES</div>
+                        </div>
+                        <div class="card">
+                            <p style="margin-bottom: 25px; color: var(--text-muted);">Choose a pigment to update your character's base mesh.</p>
+                            <div class="skin-grid" id="skin-swatches">
+                                <!-- Skin swatches generated by JS -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            `).join('');
-        }
-    };
+            </section>
+        </main>
 
-    system.init();
-</script>
+        <!-- RIGHT ACTIVITY BAR -->
+        <aside class="right-activity-bar">
+            <h4 style="font-size: 12px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 30px;">GLOBAL MEMBERS</h4>
+            <div id="member-feed-list"></div>
+        </aside>
+    </div>
 
+    <!-- SCRIPT ENGINE -->
+    <script>
+        const Core = {
+            state: JSON.parse(localStorage.getItem('goblocks_v4')),
+
+            init() {
+                if (this.state) this.mount();
+                this.generateSkinSwatches();
+                this.generateMemberFeed();
+            },
+
+            beginSession() {
+                const input = document.getElementById('auth-username').value;
+                if (input.length  p.classList.remove('active'));
+                document.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active'));
+                
+                document.getElementById('page-' + pageId).classList.add('active');
+                document.getElementById('btn-' + pageId).classList.add('active');
+                window.scrollTo(0,0);
+            },
+
+            generateSkinSwatches() {
+                const colors = ['#ffdbac', '#f1c27d', '#e0ac69', '#8d5524', '#333333', '#ffffff', '#0084ff', '#ff3d00', '#00e676', '#ffff00', '#ff00ff', '#8800ff'];
+                const container = document.getElementById('skin-swatches');
+                colors.forEach(hex => {
+                    const swatch = document.createElement('div');
+                    swatch.className = 'skin-swatch';
+                    swatch.style.backgroundColor = hex;
+                    swatch.onclick = () => this.applySkin(hex);
+                    container.appendChild(swatch);
+                });
+            },
+
+            applySkin(hex) {
+                this.state.skin = hex;
+                this.sync();
+                document.documentElement.style.setProperty('--skin-hex', hex);
+            },
+
+            generateMemberFeed() {
+                const users = [
+                    { name: 'Null_Entity', status: 'Online' },
+                    { name: 'Grid_Admin', status: 'In-Studio' },
+                    { name: 'Pixel_Master', status: 'Online' },
+                    { name: 'Binary_01', status: 'Offline' }
+                ];
+                const list = document.getElementById('member-feed-list');
+                users.forEach(u => {
+                    list.innerHTML += `
+                        <div class="member-card">
+                            <div class="member-avatar"></div>
+                            <div class="member-info">
+                                <b>${u.name}</b>
+                                <span>${u.status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+
+            sync() { localStorage.setItem('goblocks_v4', JSON.stringify(this.state)); },
+
+            endSession() {
+                localStorage.removeItem('goblocks_v4');
+                location.reload();
+            }
+        };
+
+        Core.init();
+    </script>
 </body>
 </html>
-
