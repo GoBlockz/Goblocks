@@ -2,90 +2,109 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOblocks | Pro Engine</title>
+    <title>GOblocks | 3D Evolution</title>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
             --goblocks-red: #e11d48; --dark-bg: #0b0f1a; --sidebar-bg: #161b2d;
-            --card-bg: #1e293b; --text-main: #f8fafc; --accent-gold: #fbbf24;
-            --3d-shadow: rgba(0,0,0,0.3);
+            --card-bg: #1e293b; --accent-gold: #fbbf24;
+            --char-color: #fbbf24;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
-        body { background: var(--dark-bg); color: var(--text-main); overflow: hidden; height: 100vh; perspective: 1000px; }
+        body { background: var(--dark-bg); color: #fff; overflow: hidden; height: 100vh; perspective: 1200px; }
 
-        /* --- 3D CHARACTER ENGINE --- */
-        .stage-3d { width: 200px; height: 300px; position: relative; transform-style: preserve-3d; transform: rotateY(-20deg) rotateX(5deg); margin: 0 auto; transition: 0.5s; }
-        .stage-3d:hover { transform: rotateY(20deg) rotateX(-5deg); }
+        /* --- ADVANCED 3D CHARACTER ENGINE --- */
+        .stage-3d {
+            width: 250px; height: 350px; margin: 40px auto;
+            position: relative; transform-style: preserve-3d;
+            transform: rotateY(-25deg) rotateX(-5deg);
+            transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .stage-3d:hover { transform: rotateY(25deg) rotateX(5deg); }
+
+        /* Cube Helper */
+        .cube { position: absolute; transform-style: preserve-3d; }
+        .side {
+            position: absolute; background: var(--char-color);
+            border: 1px solid rgba(0,0,0,0.15);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        /* Fedora Design (Wide Brim + Ribbon) */
+        .fedora {
+            position: absolute; top: -15px; left: -10px; width: 70px; height: 15px;
+            transform-style: preserve-3d; z-index: 10;
+        }
+        .fedora-brim {
+            position: absolute; width: 100px; height: 100px; background: #222;
+            top: 5px; left: -25px; transform: rotateX(90deg); border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .fedora-top {
+            position: absolute; width: 50px; height: 35px; background: #222;
+            top: -30px; left: 0; border: 2px solid #e11d48; /* Red Ribbon Band */
+        }
+
+        /* Body Parts with ARMS */
+        .head { width: 50px; height: 50px; left: 100px; top: 0; }
+        .torso { width: 90px; height: 110px; left: 80px; top: 55px; }
+        .arm-l { width: 35px; height: 100px; left: 40px; top: 55px; transform: rotateZ(5deg); }
+        .arm-r { width: 35px; height: 100px; left: 175px; top: 55px; transform: rotateZ(-5deg); }
+        .leg-l { width: 40px; height: 105px; left: 80px; top: 170px; }
+        .leg-r { width: 40px; height: 105px; left: 130px; top: 170px; }
+
+        /* --- INTERFACE --- */
+        #top-hud { position: fixed; top: 25px; right: 25px; z-index: 1000; }
+        .stat-pill {
+            background: rgba(22, 27, 45, 0.95); backdrop-filter: blur(20px);
+            padding: 15px 30px; border-radius: 12px; border: 2px solid var(--goblocks-red);
+            display: flex; align-items: center; gap: 15px;
+        }
+        #global-block-count { font-weight: 900; font-size: 1.5rem; }
+
+        nav.sidebar { width: 280px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 40px 20px; height: 100vh; float: left; }
+        .nav-link { padding: 18px; margin-bottom: 12px; border-radius: 12px; cursor: pointer; color: #64748b; font-weight: 700; transition: 0.3s; }
+        .nav-link.active { background: var(--goblocks-red); color: white; }
         
-        .block-3d { position: absolute; transform-style: preserve-3d; background: var(--user-color, #fbbf24); border: 1px solid rgba(0,0,0,0.1); box-shadow: inset -5px -5px 15px var(--3d-shadow); }
-        
-        .b-head { width: 50px; height: 50px; top: 0; left: 75px; border-radius: 4px; }
-        .b-torso { width: 80px; height: 100px; top: 55px; left: 60px; border-radius: 2px; }
-        .b-arm-l { width: 30px; height: 90px; top: 55px; left: 25px; border-radius: 2px; transform: rotateZ(5deg); }
-        .b-arm-r { width: 30px; height: 90px; top: 55px; left: 145px; border-radius: 2px; transform: rotateZ(-5deg); }
-        .b-leg-l { width: 35px; height: 95px; top: 160px; left: 60px; }
-        .b-leg-r { width: 35px; height: 95px; top: 160px; left: 105px; }
-
-        /* --- TOP HUD --- */
-        #top-hud { position: fixed; top: 25px; right: 25px; z-index: 99999; display: none; }
-        .stat-pill { background: rgba(22, 27, 45, 0.9); backdrop-filter: blur(20px); padding: 12px 25px; border-radius: 12px; border: 2px solid var(--goblocks-red); display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-        #global-block-count { font-weight: 900; font-size: 1.4rem; color: #fff; }
-
-        /* --- HOME PAGE COMPLEXITY --- */
-        .dashboard-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 25px; }
-        .stat-card { background: var(--card-bg); padding: 25px; border-radius: 20px; border-left: 5px solid var(--goblocks-red); }
-        .news-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .rank-tag { background: var(--goblocks-red); padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 900; }
-
-        /* --- SYSTEM LAYOUT --- */
-        .app-shell { display: none; height: 100vh; width: 100vw; }
-        #auth-gate { position: fixed; inset: 0; background: #0b0f1a; z-index: 100000; display: flex; align-items: center; justify-content: center; }
-        nav.sidebar { width: 280px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 30px; border-right: 1px solid #1e293b; }
-        .nav-link { padding: 18px; margin-bottom: 10px; border-radius: 12px; cursor: pointer; font-weight: 700; color: #64748b; transition: 0.3s; }
-        .nav-link.active { background: var(--goblocks-red); color: white; box-shadow: 0 10px 20px rgba(225,29,72,0.3); }
-        .logout-section { margin-top: auto; color: #ef4444; font-weight: 900; cursor: pointer; padding-top: 20px; border-top: 1px solid #1e293b; }
-        .viewport { flex: 1; padding: 50px; overflow-y: auto; }
-        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 8px; border: none; background: #1e293b; color: white; outline: none; }
-        .btn-primary { width: 100%; padding: 15px; background: var(--goblocks-red); color: white; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; }
+        .viewport { margin-left: 280px; padding: 60px; height: 100vh; overflow-y: auto; }
+        #auth-gate { position: fixed; inset: 0; background: #0b0f1a; z-index: 10000; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="top-hud">
+    <div id="top-hud" style="display:none;">
         <div class="stat-pill">
-            <div style="width:20px; height:20px; background:var(--accent-gold); border-radius:50%"></div>
+            <div style="width:24px; height:24px; background:var(--accent-gold); border-radius:50%"></div>
             <span id="global-block-count">0</span>
         </div>
     </div>
 
     <div id="auth-gate">
-        <div style="background:var(--sidebar-bg); padding:50px; border-radius:24px; width:450px; box-shadow: 0 50px 100px rgba(0,0,0,0.5);">
-            <h1 style="text-align:center; margin-bottom: 40px; font-size:36px; font-weight:900;">GO<span style="color:var(--goblocks-red)">BLOCKS</span></h1>
-            <input type="text" id="u-input" placeholder="Enter Username">
-            <input type="password" id="p-input" placeholder="Security Password">
-            <button class="btn-primary" onclick="Core.Auth.login()">INITIALIZE ENGINE</button>
-            <p onclick="Core.Auth.register()" style="text-align:center; margin-top:20px; cursor:pointer; color:#64748b; font-size:12px;">ENCRYPT NEW ACCOUNT</p>
+        <div style="background:var(--sidebar-bg); padding:50px; border-radius:24px; width:450px;">
+            <h1 style="text-align:center; margin-bottom:40px; font-weight:900;">GO<span style="color:var(--goblocks-red)">BLOCKS</span></h1>
+            <input type="text" id="u-input" placeholder="Username" style="width:100%; padding:15px; background:#1e293b; color:white; border:none; border-radius:8px; margin-bottom:20px;">
+            <input type="password" id="p-input" placeholder="Password" style="width:100%; padding:15px; background:#1e293b; color:white; border:none; border-radius:8px; margin-bottom:20px;">
+            <button onclick="Core.Auth.login()" style="width:100%; padding:15px; background:var(--goblocks-red); color:white; border:none; border-radius:8px; font-weight:900; cursor:pointer;">START ENGINE</button>
+            <p onclick="Core.Auth.register()" style="text-align:center; margin-top:20px; cursor:pointer; color:#64748b;">Sign Up</p>
         </div>
     </div>
 
-    <div class="app-shell" id="main-engine">
+    <div id="main-engine" style="display:none;">
         <nav class="sidebar">
-            <div style="font-weight:900; font-size: 26px; margin-bottom: 50px;">GO<span style="color:var(--goblocks-red)">B.</span></div>
+            <div style="font-weight:900; font-size:28px; margin-bottom:60px;">GO<span style="color:var(--goblocks-red)">B.</span></div>
             <div class="nav-link active" onclick="Core.Router.go('home', this)">Dashboard</div>
-            <div class="nav-link" onclick="Core.Router.go('avatar', this)">Character Lab</div>
-            <div class="nav-link" onclick="Core.Router.go('mining', this)">Ore Refinery</div>
-            <div class="nav-link" onclick="Core.Router.go('market', this)">Market Node</div>
-            <div class="nav-link" onclick="Core.Router.go('players', this)">Player Logs</div>
-            <div class="logout-section" onclick="location.reload()">TERMINATE SESSION</div>
+            <div class="nav-link" onclick="Core.Router.go('avatar', this)">Avatar Lab</div>
+            <div class="nav-link" onclick="Core.Router.go('mining', this)">Block Mining</div>
+            <div class="nav-link" onclick="Core.Router.go('players', this)">New Players</div>
+            <div style="margin-top:auto; color:#ef4444; font-weight:900; cursor:pointer;" onclick="location.reload()">LOGOUT</div>
         </nav>
         <main class="viewport" id="view-target"></main>
     </div>
 
     <script>
         const Core = (() => {
-            const _STATE = { user: null, db: () => JSON.parse(localStorage.getItem('gb_v3_core') || '[]') };
-            const _save = (data) => localStorage.setItem('gb_v3_core', JSON.stringify(data));
+            const _STATE = { user: null, db: () => JSON.parse(localStorage.getItem('gb_v4') || '[]') };
+            const _save = (data) => localStorage.setItem('gb_v4', JSON.stringify(data));
 
             return {
                 Auth: {
@@ -93,9 +112,9 @@
                         const u = document.getElementById('u-input').value;
                         const p = document.getElementById('p-input').value;
                         const users = _STATE.db();
-                        if(users.find(x => x.u === u)) return alert("Protocol Error: Identity Exists");
-                        users.push({ u, p, b: 0, color: '#fbbf24', ts: Date.now(), xp: 0 });
-                        _save(users); alert("Account Encrypted.");
+                        if(users.find(x => x.u === u)) return alert("User exists");
+                        users.push({ u, p, b: 0, color: '#fbbf24', acc: {fedora: true}, ts: Date.now() });
+                        _save(users); alert("Created!");
                     },
                     login: () => {
                         const u = document.getElementById('u-input').value;
@@ -104,11 +123,11 @@
                         if(user) {
                             _STATE.user = user;
                             document.getElementById('auth-gate').style.display = 'none';
-                            document.getElementById('main-engine').style.display = 'flex';
+                            document.getElementById('main-engine').style.display = 'block';
                             document.getElementById('top-hud').style.display = 'block';
-                            Core.UI.refresh();
+                            Core.UI.refreshHUD();
                             Core.Router.go('home');
-                        } else { alert("Access Denied."); }
+                        } else { alert("Fail"); }
                     }
                 },
                 Router: {
@@ -116,51 +135,37 @@
                         const target = document.getElementById('view-target');
                         if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
                         
-                        const views = {
-                            home: `
-                                <div class="dashboard-grid">
-                                    <div>
-                                        <h1>Welcome, Operator ${_STATE.user.u}</h1>
-                                        <div style="margin:30px 0;">${Core.UI.draw3D(_STATE.user.color)}</div>
-                                        <div class="stat-card">
-                                            <h3>Active Statistics</h3>
-                                            <p style="margin-top:15px; color:#94a3b8;">Refined Blocks: <b style="color:white;">${_STATE.user.b}</b></p>
-                                            <p style="color:#94a3b8;">System Rank: <span class="rank-tag">LEVEL ${Math.floor(_STATE.user.b/100)+1}</span></p>
-                                        </div>
-                                    </div>
-                                    <div class="stat-card" style="border-color:#3b82f6;">
-                                        <h3>Global Engine News</h3>
-                                        <div class="news-item"><p><b>v3.0.0 Live</b></p><small>3D Character Engine initialized.</small></div>
-                                        <div class="news-item"><p><b>Arms Protocol</b></p><small>Manual manipulation now active.</small></div>
-                                        <div class="news-item"><p><b>Market Node</b></p><small>Checking for server stability...</small></div>
-                                    </div>
-                                </div>`,
-                            avatar: `<h1>Character Lab</h1><div style="margin:50px 0;">${Core.UI.draw3D(_STATE.user.color)}</div>
-                                <h3>Select Pigment</h3><div style="display:flex; gap:10px; margin-top:20px;">
-                                ${['#fbbf24', '#ef4444', '#3b82f6', '#10b981', '#ffffff'].map(c => `<div onclick="Core.Mech.setColor('${c}')" style="width:50px; height:50px; background:${c}; cursor:pointer; border-radius:12px;"></div>`).join('')}
-                                </div>`,
-                            mining: `<div style="text-align:center; padding-top:80px;"><h1>Ore Refinery</h1><br><button onclick="Core.Mech.mine()" style="width:250px; height:250px; border-radius:50%; background:var(--goblocks-red); color:white; font-size:32px; font-weight:900; border:15px solid rgba(255,255,255,0.1); cursor:pointer;">REFINE</button></div>`
-                        };
-                        target.innerHTML = views[page] || `<h1>${page}</h1><p>Logging system data...</p>`;
-                        if(page === 'players') Core.Mech.loadLogs();
+                        if(page === 'home') {
+                            target.innerHTML = `<h1>Dashboard</h1><div style="display:flex; gap:50px; align-items:center;">${Core.UI.draw3D(_STATE.user)}<div><h3>Status: Active</h3><p>Blocks: ${_STATE.user.b}</p></div></div>`;
+                        } else if(page === 'avatar') {
+                            target.innerHTML = `<h1>Avatar Lab</h1>${Core.UI.draw3D(_STATE.user)}<h3>Skin Tones</h3><div style="display:flex; gap:10px; margin-top:20px;">
+                                ${['#fbbf24', '#ffcc33', '#eab308', '#d97706'].map(c => `<div onclick="Core.Mech.setColor('${c}')" style="width:50px; height:50px; background:${c}; cursor:pointer; border-radius:12px;"></div>`).join('')}
+                            </div>`;
+                        } else if(page === 'mining') {
+                            target.innerHTML = `<h1>Mining Node</h1><div style="text-align:center; padding-top:50px;"><button onclick="Core.Mech.mine()" style="width:200px; height:200px; border-radius:50%; background:var(--goblocks-red); color:white; font-size:30px; font-weight:900; border:10px solid #fff; cursor:pointer;">MINE</button></div>`;
+                        } else if(page === 'players') {
+                            target.innerHTML = `<h1>New Logins</h1>` + _STATE.db().reverse().map(p => `<div style="background:#1e293b; padding:15px; margin-top:10px; border-radius:8px;"><b>${p.u}</b> - ${p.b} blocks</div>`).join('');
+                        }
                     }
                 },
                 Mech: {
-                    mine: () => { _STATE.user.b += 1; Core.UI.refresh(); Core.Mech.sync(); },
+                    mine: () => { _STATE.user.b += 1; Core.UI.refreshHUD(); Core.Mech.sync(); },
                     setColor: (c) => { _STATE.user.color = c; Core.Router.go('avatar'); Core.Mech.sync(); },
-                    sync: () => { const db = _STATE.db(); const i = db.findIndex(x => x.u === _STATE.user.u); db[i] = _STATE.user; _save(db); },
-                    loadLogs: () => { document.getElementById('view-target').innerHTML = `<h1>Player Logs</h1>` + _STATE.db().reverse().map(p => `<div style="background:var(--card-bg); padding:15px; margin-top:10px; border-radius:12px;"><b>${p.u}</b> - ${p.b} blocks</div>`).join(''); }
+                    sync: () => { const db = _STATE.db(); const i = db.findIndex(x => x.u === _STATE.user.u); db[i] = _STATE.user; _save(db); }
                 },
                 UI: {
-                    refresh: () => { document.getElementById('global-block-count').innerText = _STATE.user.b.toLocaleString(); },
-                    draw3D: (c) => `
-                        <div class="stage-3d" style="--user-color: ${c}">
-                            <div class="block-3d b-head"></div>
-                            <div class="block-3d b-torso"></div>
-                            <div class="block-3d b-arm-l"></div>
-                            <div class="block-3d b-arm-r"></div>
-                            <div class="block-3d b-leg-l"></div>
-                            <div class="block-3d b-leg-r"></div>
+                    refreshHUD: () => { document.getElementById('global-block-count').innerText = _STATE.user.b.toLocaleString(); },
+                    draw3D: (u) => `
+                        <div class="stage-3d" style="--char-color: ${u.color}">
+                            <div class="cube head">
+                                ${u.acc.fedora ? '<div class="fedora"><div class="fedora-brim"></div><div class="fedora-top"></div></div>' : ''}
+                                <div class="side" style="width:50px; height:50px;"></div>
+                            </div>
+                            <div class="cube torso"><div class="side" style="width:90px; height:110px;"></div></div>
+                            <div class="cube arm-l"><div class="side" style="width:35px; height:100px;"></div></div>
+                            <div class="cube arm-r"><div class="side" style="width:35px; height:100px;"></div></div>
+                            <div class="cube leg-l"><div class="side" style="width:40px; height:105px;"></div></div>
+                            <div class="cube leg-r"><div class="side" style="width:40px; height:105px;"></div></div>
                         </div>`
                 }
             };
