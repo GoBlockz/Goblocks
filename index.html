@@ -3,223 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOblocks | Discover</title>
+    <title>GOblocks | Platform</title>
     <style>
         :root {
-            --rbx-bg: #111216; /* Roblox Dark Theme */
-            --rbx-card: #212229;
+            --rbx-bg: #000000;
+            --rbx-card: #0a0a0a;
             --rbx-nav: #000000;
-            --rbx-blue: #0084ff;
-            --rbx-border: #393b4a;
-            --white: #ffffff;
-            --gray: #bdbebe;
+            --rbx-border: #1a1a1a;
+            --accent: #ffffff;
+            /* Default Skin Tone */
+            --skin: #ffdbac; 
         }
 
         body {
             background-color: var(--rbx-bg);
-            color: var(--white);
-            font-family: "HCo Gotham SSm", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-            margin: 0; padding: 0; overflow-x: hidden;
+            color: #fff;
+            font-family: "Segoe UI", Roboto, sans-serif;
+            margin: 0; overflow-x: hidden;
         }
 
         /* --- AUTH WALL --- */
         #auth-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--rbx-bg); z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
+            background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center;
         }
 
         .auth-card {
-            background: var(--rbx-card); padding: 40px; border-radius: 8px;
-            width: 380px; text-align: center; border: 1px solid var(--rbx-border);
+            background: var(--rbx-card); padding: 40px; border: 1px solid var(--rbx-border);
+            width: 320px; text-align: center;
         }
-
-        .auth-card h2 { margin-bottom: 25px; font-weight: 800; font-size: 24px; }
 
         input {
-            width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 4px;
-            border: 1px solid var(--rbx-border); background: #000; color: #fff;
-            box-sizing: border-box; font-size: 14px;
+            width: 100%; padding: 12px; margin-bottom: 15px; background: #000;
+            border: 1px solid var(--rbx-border); color: #fff; box-sizing: border-box;
         }
 
-        .btn-auth {
-            width: 100%; padding: 12px; background: var(--white); color: #000;
-            border: none; border-radius: 4px; font-weight: 800; cursor: pointer;
-            margin-top: 10px; transition: 0.2s;
+        .btn-main {
+            width: 100%; padding: 12px; background: #fff; color: #000;
+            border: none; font-weight: 800; cursor: pointer; text-transform: uppercase;
         }
 
-        .btn-auth:hover { background: var(--gray); }
-
-        /* --- MAIN UI --- */
+        /* --- NAV --- */
         .navbar {
-            background: var(--rbx-nav); height: 45px; display: flex;
-            align-items: center; padding: 0 20px; border-bottom: 1px solid var(--rbx-border);
+            background: #000; border-bottom: 1px solid var(--rbx-border);
+            padding: 10px 40px; display: flex; align-items: center;
             position: sticky; top: 0; z-index: 1000;
         }
 
-        .rbx-logo { font-weight: 900; font-size: 18px; margin-right: 30px; cursor: pointer; letter-spacing: -1px; }
+        .logo { font-weight: 900; border: 2px solid #fff; padding: 2px 8px; cursor: pointer; margin-right: 30px; }
 
-        .nav-links span { color: var(--gray); font-size: 13px; font-weight: 600; margin-right: 20px; cursor: pointer; }
-        .nav-links span:hover { color: var(--white); }
+        .nav-links span { color: #666; font-size: 12px; font-weight: 700; margin-right: 20px; cursor: pointer; }
+        .nav-links span:hover { color: #fff; }
 
-        /* --- CONTENT --- */
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: none; }
-        .active-session { display: block; animation: fadeIn 0.4s ease; }
+        /* --- LAYOUT --- */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; display: none; }
+        .active-session { display: grid; grid-template-columns: 1fr 300px; gap: 30px; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .card { background: var(--rbx-card); border: 1px solid var(--rbx-border); padding: 20px; margin-bottom: 20px; }
 
-        .row { display: flex; gap: 20px; }
-        .sidebar { width: 180px; }
-        .main-content { flex: 1; }
-
-        .card { background: var(--rbx-card); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-
-        /* --- BLOCKY AVATAR RENDERER --- */
-        .avatar-container {
-            width: 160px; height: 160px; background: #000; border-radius: 50%;
-            margin: 0 auto 20px; border: 4px solid var(--rbx-border);
-            position: relative; overflow: hidden;
+        /* --- BLOCKY CHARACTER (WITH LEGS) --- */
+        .avatar-box {
+            width: 100%; height: 250px; background: #050505; 
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--rbx-border); margin-bottom: 20px;
         }
 
-        .block-man {
-            position: relative; width: 40px; height: 40px; background: #e0e0e0;
-            margin: 40px auto; transform-style: preserve-3d;
+        .block-man { position: relative; width: 40px; height: 60px; }
+        
+        /* Head */
+        .head { 
+            position: absolute; top: -35px; left: 5px; width: 30px; height: 30px; 
+            background: var(--skin); border-radius: 2px;
         }
-        /* Visual Head */
-        .block-man::before {
-            content: ''; position: absolute; top: -35px; left: 5px;
-            width: 30px; height: 30px; background: #ffdbac; /* Skin Tone */
-            border-radius: 4px; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
+        /* Torso */
+        .torso { 
+            position: absolute; top: 0; left: 0; width: 40px; height: 50px; 
+            background: var(--skin); border-radius: 1px;
         }
-        /* Visual Torso */
-        .block-man::after {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 40px; height: 50px; background: #0084ff; /* Shirt */
-            border-radius: 2px;
-        }
+        /* Legs */
+        .leg-l { position: absolute; top: 52px; left: 2px; width: 17px; height: 40px; background: var(--skin); }
+        .leg-r { position: absolute; top: 52px; left: 21px; width: 17px; height: 40px; background: var(--skin); }
 
-        /* --- ITEM TILES --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .item-tile { background: var(--rbx-card); border-radius: 8px; padding: 10px; border: 1px solid var(--rbx-border); text-align: center; }
-        .item-thumb { height: 100px; background: #111; border-radius: 4px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        /* --- SKIN COLOR PICKER --- */
+        .color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
+        .swatch { width: 100%; height: 40px; cursor: pointer; border: 1px solid #333; }
+        .swatch:hover { border-color: #fff; }
+
+        /* --- MEMBER LIST --- */
+        .member-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; }
+        .mini-circle { width: 30px; height: 30px; background: #222; border-radius: 50%; }
 
     </style>
 </head>
 <body>
 
-<!-- AUTH OVERLAY -->
 <div id="auth-overlay">
     <div class="auth-card">
-        <h2 id="auth-title">Log Into GOblocks</h2>
-        <input type="text" id="user-input" placeholder="Username">
-        <input type="password" id="pass-input" placeholder="Password">
-        <button class="btn-auth" onclick="app.login()">Log In</button>
-        <p style="font-size: 12px; color: var(--gray); margin-top: 20px;">
-            Don't have an account? <span style="color: var(--white); cursor: pointer;" onclick="app.toggleAuth()">Sign Up</span>
-        </p>
+        <h2 style="letter-spacing:2px;">GOblocks</h2>
+        <input type="text" id="user-input" placeholder="USERNAME">
+        <button class="btn-main" onclick="app.login()">INITIALIZE</button>
     </div>
 </div>
 
-<!-- TOP NAV -->
 <nav class="navbar">
-    <div class="rbx-logo">GOBLOCKS</div>
+    <div class="logo" onclick="app.showPage('home')">GO</div>
     <div class="nav-links">
-        <span onclick="app.showPage('home')">Home</span>
-        <span onclick="app.showPage('avatar')">Avatar</span>
-        <span onclick="app.showPage('discover')">Discover</span>
+        <span onclick="app.showPage('home')">HOME</span>
+        <span onclick="app.showPage('avatar')">AVATAR</span>
     </div>
-    <div style="margin-left: auto; font-size: 13px; font-weight: 700;" id="user-tag"></div>
+    <div id="currency" style="margin-left:auto; font-size:12px; font-weight:800;">0 G-BUX</div>
 </nav>
 
-<!-- MAIN CONTAINER -->
 <div class="container" id="main-app">
-    <div class="row">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="avatar-container">
-                <div class="block-man"></div>
+    <!-- LEFT CONTENT -->
+    <main>
+        <section id="home-view">
+            <h1>Dashboard</h1>
+            <div class="card">
+                <h3>Welcome back, <span id="user-name-display"></span></h3>
+                <p style="color:#666;">Your identity is synced to the monochrome grid.</p>
             </div>
-            <p style="text-align:center; font-weight: 800;" id="sidebar-name"></p>
-            <hr style="border: 0; border-top: 1px solid var(--rbx-border); margin: 20px 0;">
-            <div class="nav-links" style="display: flex; flex-direction: column; gap: 15px;">
-                <span onclick="app.logout()" style="color: #ff5050;">Logout</span>
+        </section>
+
+        <section id="avatar-view" style="display:none;">
+            <h1>Identity Editor</h1>
+            <div class="avatar-box">
+                <div class="block-man">
+                    <div class="head"></div>
+                    <div class="torso"></div>
+                    <div class="leg-l"></div>
+                    <div class="leg-r"></div>
+                </div>
             </div>
-        </aside>
-
-        <!-- Main Feed -->
-        <main class="main-content">
-            
-            <section id="home-view">
-                <h1>Home</h1>
-                <div class="card">
-                    <h3>Continue Playing</h3>
-                    <div class="grid">
-                        <div class="item-tile"><div class="item-thumb">🏢</div><b>Work at a Pizza</b></div>
-                        <div class="item-tile"><div class="item-thumb">🌳</div><b>Natural Disasters</b></div>
-                    </div>
+            <div class="card">
+                <h3>Select Skin Tone</h3>
+                <div class="color-grid">
+                    <div class="swatch" style="background:#ffdbac" onclick="app.setSkin('#ffdbac')"></div>
+                    <div class="swatch" style="background:#f1c27d" onclick="app.setSkin('#f1c27d')"></div>
+                    <div class="swatch" style="background:#e0ac69" onclick="app.setSkin('#e0ac69')"></div>
+                    <div class="swatch" style="background:#8d5524" onclick="app.setSkin('#8d5524')"></div>
+                    <div class="swatch" style="background:#c68642" onclick="app.setSkin('#c68642')"></div>
+                    <div class="swatch" style="background:#ffffff" onclick="app.setSkin('#ffffff')"></div>
+                    <div class="swatch" style="background:#555555" onclick="app.setSkin('#555555')"></div>
+                    <div class="swatch" style="background:#333333" onclick="app.setSkin('#333333')"></div>
+                    <div class="swatch" style="background:#111111" onclick="app.setSkin('#111111')"></div>
+                    <div class="swatch" style="background:#ff0000" onclick="app.setSkin('#ff0000')"></div>
                 </div>
-            </section>
+            </div>
+        </section>
+    </main>
 
-            <section id="avatar-view" style="display:none;">
-                <h1>Avatar Editor</h1>
-                <div class="card" style="display: flex; gap: 30px;">
-                    <div class="avatar-container" style="margin:0; width:200px; height:200px;">
-                         <div class="block-man" style="transform: scale(1.5) translateY(10px);"></div>
-                    </div>
-                    <div style="flex:1;">
-                        <h3>Wardrobe</h3>
-                        <div class="grid">
-                            <div class="item-tile"><div class="item-thumb">👕</div>Blue Shirt</div>
-                            <div class="item-tile"><div class="item-thumb">👖</div>Black Slacks</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-    </div>
+    <!-- RIGHT SIDEBAR -->
+    <aside>
+        <div class="card">
+            <h4 style="margin-top:0; color:#666; font-size:11px; letter-spacing:1px;">NEWEST ENTITIES</h4>
+            <div id="new-members-list">
+                <!-- Members will be added here -->
+            </div>
+        </div>
+    </aside>
 </div>
 
 <script>
     const app = {
-        isSignUp: false,
-        currentUser: JSON.parse(localStorage.getItem('goblox_session')),
+        user: JSON.parse(localStorage.getItem('go_session')),
 
         init() {
-            if (this.currentUser) {
-                this.enterApp();
+            if (this.user) {
+                this.enter();
             }
-        },
-
-        toggleAuth() {
-            this.isSignUp = !this.isSignUp;
-            document.getElementById('auth-title').innerText = this.isSignUp ? "Sign Up for GOblocks" : "Log Into GOblocks";
+            this.generateMembers();
         },
 
         login() {
-            const user = document.getElementById('user-input').value;
-            if (user.length < 3) return alert("Username too short");
-            
-            this.currentUser = { name: user, id: Math.floor(Math.random()*900000) };
-            localStorage.setItem('goblox_session', JSON.stringify(this.currentUser));
-            this.enterApp();
+            const val = document.getElementById('user-input').value;
+            if (val.length < 2) return;
+            this.user = { name: val, skin: '#ffdbac' };
+            localStorage.setItem('go_session', JSON.stringify(this.user));
+            this.enter();
         },
 
-        enterApp() {
+        enter() {
             document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('main-app').style.display = 'grid';
             document.getElementById('main-app').classList.add('active-session');
-            document.getElementById('user-tag').innerText = this.currentUser.name.toUpperCase();
-            document.getElementById('sidebar-name').innerText = this.currentUser.name;
+            document.getElementById('user-name-display').innerText = this.user.name;
+            this.setSkin(this.user.skin || '#ffdbac');
         },
 
-        showPage(page) {
-            document.getElementById('home-view').style.display = page === 'home' ? 'block' : 'none';
-            document.getElementById('avatar-view').style.display = page === 'avatar' ? 'block' : 'none';
+        setSkin(color) {
+            this.user.skin = color;
+            localStorage.setItem('go_session', JSON.stringify(this.user));
+            document.documentElement.style.setProperty('--skin', color);
         },
 
-        logout() {
-            localStorage.removeItem('goblox_session');
-            location.reload();
+        showPage(p) {
+            document.getElementById('home-view').style.display = p === 'home' ? 'block' : 'none';
+            document.getElementById('avatar-view').style.display = p === 'avatar' ? 'block' : 'none';
+        },
+
+        generateMembers() {
+            const names = ["Void_01", "GridWalker", "MonoUser", "NullPointer", "PixelAdmin", "CyberGhost"];
+            const list = document.getElementById('new-members-list');
+            names.forEach(name => {
+                list.innerHTML += `
+                    <div class="member-item">
+                        <div class="mini-circle"></div>
+                        <span>${name}</span>
+                        <span style="margin-left:auto; color:#333; font-size:10px;">Just Joined</span>
+                    </div>
+                `;
+            });
         }
     };
 
