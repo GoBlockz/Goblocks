@@ -3,216 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOblocks | OS</title>
+    <title>GOblocks | Discover</title>
     <style>
         :root {
-            --bg: #000000;
-            --card: #080808;
-            --border: #1a1a1a;
-            --accent: #ffffff;
-            --text: #ffffff;
-            --text-dim: #555555;
+            --rbx-bg: #111216; /* Roblox Dark Theme */
+            --rbx-card: #212229;
+            --rbx-nav: #000000;
+            --rbx-blue: #0084ff;
+            --rbx-border: #393b4a;
+            --white: #ffffff;
+            --gray: #bdbebe;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: "Inter", "Segoe UI", sans-serif;
-            margin: 0;
-            letter-spacing: -0.5px;
+            background-color: var(--rbx-bg);
+            color: var(--white);
+            font-family: "HCo Gotham SSm", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+            margin: 0; padding: 0; overflow-x: hidden;
         }
 
-        /* Structural Layout */
+        /* --- AUTH WALL --- */
+        #auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--rbx-bg); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .auth-card {
+            background: var(--rbx-card); padding: 40px; border-radius: 8px;
+            width: 380px; text-align: center; border: 1px solid var(--rbx-border);
+        }
+
+        .auth-card h2 { margin-bottom: 25px; font-weight: 800; font-size: 24px; }
+
+        input {
+            width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 4px;
+            border: 1px solid var(--rbx-border); background: #000; color: #fff;
+            box-sizing: border-box; font-size: 14px;
+        }
+
+        .btn-auth {
+            width: 100%; padding: 12px; background: var(--white); color: #000;
+            border: none; border-radius: 4px; font-weight: 800; cursor: pointer;
+            margin-top: 10px; transition: 0.2s;
+        }
+
+        .btn-auth:hover { background: var(--gray); }
+
+        /* --- MAIN UI --- */
         .navbar {
-            background: rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid var(--border);
-            padding: 20px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            backdrop-filter: blur(15px);
-            z-index: 100;
+            background: var(--rbx-nav); height: 45px; display: flex;
+            align-items: center; padding: 0 20px; border-bottom: 1px solid var(--rbx-border);
+            position: sticky; top: 0; z-index: 1000;
         }
 
-        .logo { font-weight: 900; font-size: 20px; cursor: pointer; border: 2px solid #fff; padding: 2px 8px; }
-        
-        .nav-links span {
-            margin-left: 30px;
-            font-size: 11px;
-            font-weight: 800;
-            cursor: pointer;
-            color: var(--text-dim);
-            transition: 0.2s;
-            text-transform: uppercase;
+        .rbx-logo { font-weight: 900; font-size: 18px; margin-right: 30px; cursor: pointer; letter-spacing: -1px; }
+
+        .nav-links span { color: var(--gray); font-size: 13px; font-weight: 600; margin-right: 20px; cursor: pointer; }
+        .nav-links span:hover { color: var(--white); }
+
+        /* --- CONTENT --- */
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: none; }
+        .active-session { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .row { display: flex; gap: 20px; }
+        .sidebar { width: 180px; }
+        .main-content { flex: 1; }
+
+        .card { background: var(--rbx-card); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+
+        /* --- BLOCKY AVATAR RENDERER --- */
+        .avatar-container {
+            width: 160px; height: 160px; background: #000; border-radius: 50%;
+            margin: 0 auto 20px; border: 4px solid var(--rbx-border);
+            position: relative; overflow: hidden;
         }
 
-        .nav-links span:hover { color: #fff; }
-
-        /* Main Container */
-        .container { max-width: 700px; margin: 60px auto; padding: 0 20px; }
-        .page { display: none; }
-        .active { display: block; animation: appear 0.5s ease; }
-
-        @keyframes appear { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* UI Components */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 4px;
-            margin-bottom: 25px;
+        .block-man {
+            position: relative; width: 40px; height: 40px; background: #e0e0e0;
+            margin: 40px auto; transform-style: preserve-3d;
+        }
+        /* Visual Head */
+        .block-man::before {
+            content: ''; position: absolute; top: -35px; left: 5px;
+            width: 30px; height: 30px; background: #ffdbac; /* Skin Tone */
+            border-radius: 4px; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
+        }
+        /* Visual Torso */
+        .block-man::after {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 40px; height: 50px; background: #0084ff; /* Shirt */
+            border-radius: 2px;
         }
 
-        input, textarea {
-            background: #000;
-            border: 1px solid var(--border);
-            color: #fff;
-            padding: 15px;
-            width: 100%;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            font-family: inherit;
-            font-size: 14px;
-        }
+        /* --- ITEM TILES --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .item-tile { background: var(--rbx-card); border-radius: 8px; padding: 10px; border: 1px solid var(--rbx-border); text-align: center; }
+        .item-thumb { height: 100px; background: #111; border-radius: 4px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
 
-        .btn {
-            background: var(--accent);
-            color: var(--bg);
-            border: none;
-            padding: 14px 40px;
-            font-weight: 900;
-            font-size: 11px;
-            text-transform: uppercase;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.2s;
-        }
-
-        .btn:hover { background: #bbb; }
-
-        /* Post Feed Styling */
-        .post { border-left: 2px solid var(--border); padding-left: 20px; margin-bottom: 30px; }
-        .post-user { font-weight: 900; font-size: 12px; margin-bottom: 5px; }
-        .post-content { color: #aaa; font-size: 14px; }
     </style>
 </head>
 <body>
 
-<div class="navbar">
-    <div class="logo" onclick="showPage('home')">GO</div>
-    <div class="nav-links" id="nav-container">
-        <!-- Links injected by JS -->
+<!-- AUTH OVERLAY -->
+<div id="auth-overlay">
+    <div class="auth-card">
+        <h2 id="auth-title">Log Into GOblocks</h2>
+        <input type="text" id="user-input" placeholder="Username">
+        <input type="password" id="pass-input" placeholder="Password">
+        <button class="btn-auth" onclick="app.login()">Log In</button>
+        <p style="font-size: 12px; color: var(--gray); margin-top: 20px;">
+            Don't have an account? <span style="color: var(--white); cursor: pointer;" onclick="app.toggleAuth()">Sign Up</span>
+        </p>
     </div>
 </div>
 
-<div class="container">
-    
-    <!-- AUTH PAGE -->
-    <div id="auth" class="page">
-        <h1>Initialize Entity</h1>
-        <div class="card">
-            <input type="text" id="reg-user" placeholder="ENTITY_NAME">
-            <button class="btn" onclick="accountManager.register()">CREATE IDENTITY</button>
-        </div>
+<!-- TOP NAV -->
+<nav class="navbar">
+    <div class="rbx-logo">GOBLOCKS</div>
+    <div class="nav-links">
+        <span onclick="app.showPage('home')">Home</span>
+        <span onclick="app.showPage('avatar')">Avatar</span>
+        <span onclick="app.showPage('discover')">Discover</span>
     </div>
+    <div style="margin-left: auto; font-size: 13px; font-weight: 700;" id="user-tag"></div>
+</nav>
 
-    <!-- HOME PAGE (FEED) -->
-    <div id="home" class="page">
-        <h1>Feed</h1>
-        <div class="card">
-            <textarea id="post-input" placeholder="Broadcast a message..."></textarea>
-            <button class="btn" onclick="feedManager.addPost()">BROADCAST</button>
-        </div>
-        <div id="feed-container"></div>
+<!-- MAIN CONTAINER -->
+<div class="container" id="main-app">
+    <div class="row">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="avatar-container">
+                <div class="block-man"></div>
+            </div>
+            <p style="text-align:center; font-weight: 800;" id="sidebar-name"></p>
+            <hr style="border: 0; border-top: 1px solid var(--rbx-border); margin: 20px 0;">
+            <div class="nav-links" style="display: flex; flex-direction: column; gap: 15px;">
+                <span onclick="app.logout()" style="color: #ff5050;">Logout</span>
+            </div>
+        </aside>
+
+        <!-- Main Feed -->
+        <main class="main-content">
+            
+            <section id="home-view">
+                <h1>Home</h1>
+                <div class="card">
+                    <h3>Continue Playing</h3>
+                    <div class="grid">
+                        <div class="item-tile"><div class="item-thumb">🏢</div><b>Work at a Pizza</b></div>
+                        <div class="item-tile"><div class="item-thumb">🌳</div><b>Natural Disasters</b></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="avatar-view" style="display:none;">
+                <h1>Avatar Editor</h1>
+                <div class="card" style="display: flex; gap: 30px;">
+                    <div class="avatar-container" style="margin:0; width:200px; height:200px;">
+                         <div class="block-man" style="transform: scale(1.5) translateY(10px);"></div>
+                    </div>
+                    <div style="flex:1;">
+                        <h3>Wardrobe</h3>
+                        <div class="grid">
+                            <div class="item-tile"><div class="item-thumb">👕</div>Blue Shirt</div>
+                            <div class="item-tile"><div class="item-thumb">👖</div>Black Slacks</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
-
-    <!-- PROFILE PAGE -->
-    <div id="profile" class="page">
-        <div style="text-align:center; margin-bottom: 40px;">
-            <div style="font-size: 80px; margin-bottom: 10px;">👤</div>
-            <h1 id="prof-name">NULL</h1>
-            <p id="prof-id" style="color: var(--text-dim); font-size: 12px;"></p>
-        </div>
-        
-        <div class="card">
-            <h3>Identity Settings</h3>
-            <textarea id="bio-input" placeholder="Write your bio..."></textarea>
-            <button class="btn" onclick="accountManager.saveBio()">SAVE PROFILE</button>
-        </div>
-        
-        <button class="btn" style="background:transparent; color:#f00; border:1px solid #200;" onclick="accountManager.logout()">TERMINATE SESSION</button>
-    </div>
-
 </div>
 
 <script>
-    const accountManager = {
-        user: JSON.parse(localStorage.getItem('go_user')) || null,
+    const app = {
+        isSignUp: false,
+        currentUser: JSON.parse(localStorage.getItem('goblox_session')),
 
-        register() {
-            const name = document.getElementById('reg-user').value;
-            if(!name) return;
-            this.user = { name, bio: "", id: Math.floor(Math.random()*90000) };
-            this.save();
+        init() {
+            if (this.currentUser) {
+                this.enterApp();
+            }
+        },
+
+        toggleAuth() {
+            this.isSignUp = !this.isSignUp;
+            document.getElementById('auth-title').innerText = this.isSignUp ? "Sign Up for GOblocks" : "Log Into GOblocks";
+        },
+
+        login() {
+            const user = document.getElementById('user-input').value;
+            if (user.length < 3) return alert("Username too short");
+            
+            this.currentUser = { name: user, id: Math.floor(Math.random()*900000) };
+            localStorage.setItem('goblox_session', JSON.stringify(this.currentUser));
+            this.enterApp();
+        },
+
+        enterApp() {
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('main-app').classList.add('active-session');
+            document.getElementById('user-tag').innerText = this.currentUser.name.toUpperCase();
+            document.getElementById('sidebar-name').innerText = this.currentUser.name;
+        },
+
+        showPage(page) {
+            document.getElementById('home-view').style.display = page === 'home' ? 'block' : 'none';
+            document.getElementById('avatar-view').style.display = page === 'avatar' ? 'block' : 'none';
+        },
+
+        logout() {
+            localStorage.removeItem('goblox_session');
             location.reload();
-        },
-
-        saveBio() {
-            this.user.bio = document.getElementById('bio-input').value;
-            this.save();
-            alert("Identity Updated.");
-        },
-
-        save() { localStorage.setItem('go_user', JSON.stringify(this.user)); },
-
-        logout() { localStorage.removeItem('go_user'); location.reload(); }
-    };
-
-    const feedManager = {
-        posts: JSON.parse(localStorage.getItem('go_posts')) || [],
-
-        addPost() {
-            const content = document.getElementById('post-input').value;
-            if(!content) return;
-            this.posts.unshift({ user: accountManager.user.name, text: content });
-            localStorage.setItem('go_posts', JSON.stringify(this.posts));
-            document.getElementById('post-input').value = "";
-            this.render();
-        },
-
-        render() {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = this.posts.map(p => `
-                <div class="post">
-                    <div class="post-user">${p.user}</div>
-                    <div class="post-content">${p.text}</div>
-                </div>
-            `).join('');
         }
     };
 
-    function showPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    // Logic to handle state
-    if (!accountManager.user) {
-        showPage('auth');
-    } else {
-        document.getElementById('nav-container').innerHTML = `
-            <span onclick="showPage('home')">FEED</span>
-            <span onclick="showPage('profile')">PROFILE</span>
-        `;
-        document.getElementById('prof-name').innerText = accountManager.user.name;
-        document.getElementById('prof-id').innerText = "SYSTEM_ID: " + accountManager.user.id;
-        document.getElementById('bio-input').value = accountManager.user.bio;
-        feedManager.render();
-        showPage('home');
-    }
+    app.init();
 </script>
 
 </body>
