@@ -1,158 +1,218 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<style>
-  :root { --red: #ff0000; --black: #000000; --card: #1a1a1a; --text: #ffffff; }
-  
-  body { 
-    background-color: var(--black); 
-    color: var(--text); 
-    font-family: 'Segoe UI', Impact, sans-serif; 
-    margin: 0; padding: 0;
-    overflow-x: hidden;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOblocks | Home</title>
+    <style>
+        :root {
+            --bg: #000000;
+            --card: #111111;
+            --border: #222222;
+            --accent: #ffffff;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+        }
 
-  /* Fixed Navigation Bar */
-  .navbar {
-    background: #000;
-    border-bottom: 3px solid var(--red);
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
-  .logo { 
-    color: var(--red); 
-    font-size: 24px; 
-    font-weight: 900; 
-    text-transform: uppercase; 
-    letter-spacing: 2px;
-    cursor: pointer;
-  }
+        /* Modern Minimalist Navbar */
+        .navbar {
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
 
-  .nav-links span {
-    color: #888;
-    margin-left: 20px;
-    font-weight: bold;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.3s;
-    text-transform: uppercase;
-  }
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
 
-  .nav-links span:hover { color: var(--red); }
+        .nav-links span {
+            color: var(--text-dim);
+            margin-left: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-  /* Page Content Handling */
-  .page { display: none; padding: 20px; max-width: 1000px; margin: 0 auto; }
-  .active { display: block; animation: fadeIn 0.4s; }
+        .nav-links span:hover, .nav-links span.active-nav {
+            color: var(--accent);
+        }
 
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Layout Containers */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
 
-  /* Roblox-style Cards */
-  .card {
-    background: var(--card);
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid #333;
-    margin-bottom: 20px;
-  }
+        .page { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .active { display: block; }
 
-  .btn-red {
-    background: var(--red);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    text-transform: uppercase;
-  }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-  .avatar-preview {
-    width: 150px;
-    height: 150px;
-    background: #222;
-    border: 2px solid var(--red);
-    border-radius: 10px;
-    margin: 0 auto 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-</style>
+        /* Neat Component Cards */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 { margin-top: 0; font-weight: 700; }
+        p { color: var(--text-dim); line-height: 1.6; }
+
+        /* Buttons */
+        .btn {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover { opacity: 0.8; }
+
+        /* Avatar System Styles */
+        .avatar-viewport {
+            width: 100%;
+            height: 300px;
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 80px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .user-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .user-item:hover { border-color: var(--accent); }
+
+        .user-circle {
+            width: 80px;
+            height: 80px;
+            background: #222;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+        }
+    </style>
 </head>
 <body>
 
-<!-- Navigation -->
-<div class="navbar">
-  <div class="logo" onclick="showPage('home')">GOblocks</div>
-  <div class="nav-links">
-    <span onclick="showPage('home')">Home</span>
-    <span onclick="showPage('discover')">Discover</span>
-    <span onclick="showPage('avatar')">Avatar</span>
-  </div>
-</div>
-
-<!-- HOME PAGE -->
-<div id="home" class="page active">
-  <div class="card">
-    <h2 style="color: var(--red); margin-top: 0;">Welcome, Player</h2>
-    <p>Everything is red. Join the grid today.</p>
-    <button class="btn-red" onclick="showPage('discover')">Find Friends</button>
-  </div>
-  <div class="card">
-    <h4>Recent Activity</h4>
-    <p style="color: #666;">No new updates from Team c00lkidd.</p>
-  </div>
-</div>
-
-<!-- DISCOVER PAGE -->
-<div id="discover" class="page">
-  <h2 style="color: var(--red);">People</h2>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-    <div class="card" style="text-align:center;">
-      <div class="avatar-preview">🔴</div>
-      <b>c00lkidd_Fan</b>
-      <button class="btn-red" style="margin-top:10px; font-size:10px;">Add Friend</button>
+<nav class="navbar">
+    <div class="logo" onclick="showPage('home')">GOblocks</div>
+    <div class="nav-links">
+        <span onclick="showPage('home')" id="link-home" class="active-nav">HOME</span>
+        <span onclick="showPage('discover')" id="link-discover">PEOPLE</span>
+        <span onclick="showPage('avatar')" id="link-avatar">AVATAR</span>
     </div>
-    <div class="card" style="text-align:center;">
-      <div class="avatar-preview">🔴</div>
-      <b>Red_Hacker</b>
-      <button class="btn-red" style="margin-top:10px; font-size:10px;">Add Friend</button>
-    </div>
-  </div>
-</div>
+</nav>
 
-<!-- AVATAR PAGE -->
-<div id="avatar" class="page">
-  <h2 style="color: var(--red);">Avatar Editor</h2>
-  <div class="card">
-    <div class="avatar-preview">
-       <!-- Replace with your c00lkidd image URL -->
-       <img src="https://tr.rbxcdn.com" style="width:100%">
+<div class="container">
+    
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <h1>Welcome home.</h1>
+        <div class="card">
+            <h3>Feed</h3>
+            <p>Your connections are currently quiet. Explore the grid to find new friends.</p>
+            <button class="btn" onclick="showPage('discover')">Explore People</button>
+        </div>
     </div>
-    <p style="text-align:center;">Currently Wearing: <b>Team c00lkidd Shirt</b></p>
-    <button class="btn-red">Change Outfit</button>
-  </div>
+
+    <!-- DISCOVER PAGE -->
+    <div id="discover" class="page">
+        <h2>Global Discovery</h2>
+        <div class="grid">
+            <div class="user-item">
+                <div class="user-circle"></div>
+                <div style="font-weight: bold; margin-bottom: 10px;">User_01</div>
+                <button class="btn" style="width: 100%; font-size: 12px;">View Profile</button>
+            </div>
+            <div class="user-item">
+                <div class="user-circle"></div>
+                <div style="font-weight: bold; margin-bottom: 10px;">Void_Walker</div>
+                <button class="btn" style="width: 100%; font-size: 12px;">View Profile</button>
+            </div>
+            <div class="user-item">
+                <div class="user-circle"></div>
+                <div style="font-weight: bold; margin-bottom: 10px;">Mono_Type</div>
+                <button class="btn" style="width: 100%; font-size: 12px;">View Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AVATAR PAGE -->
+    <div id="avatar" class="page">
+        <h2>Identity Editor</h2>
+        <div class="card">
+            <div class="avatar-viewport">👤</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3>Current Setup</h3>
+                    <p>Monochrome Suit v1.0</p>
+                </div>
+                <button class="btn">Customize</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-  function showPage(pageId) {
-    // Hide all pages
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(p => p.classList.remove('active'));
-    
-    // Show the clicked page
-    document.getElementById(pageId).classList.add('active');
-    
-    // Scroll to top
-    window.scrollTo(0,0);
-  }
+    function showPage(pageId) {
+        // Hide all pages
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(p => p.classList.remove('active'));
+        
+        // Remove active class from all nav links
+        const links = document.querySelectorAll('.nav-links span');
+        links.forEach(l => l.classList.remove('active-nav'));
+
+        // Show selected page and update nav link
+        document.getElementById(pageId).classList.add('active');
+        document.getElementById('link-' + pageId).classList.add('active-nav');
+        
+        window.scrollTo(0,0);
+    }
 </script>
 
 </body>
