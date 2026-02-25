@@ -3,122 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOblocks | Game Engine</title>
+    <title>GOblocks | Engine 2.0</title>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
-            --goblocks-red: #e11d48;
-            --dark-bg: #0f172a;
-            --sidebar-bg: #1e293b;
-            --card-bg: #334155;
-            --text-main: #f8fafc;
-            --accent-gold: #fbbf24;
-            --sidebar-width: 280px;
+            --goblocks-red: #e11d48; --dark-bg: #0f172a; --sidebar-bg: #1e293b;
+            --card-bg: #334155; --text-main: #f8fafc; --accent-gold: #fbbf24;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { background: var(--dark-bg); color: var(--text-main); overflow: hidden; height: 100vh; }
 
-        body { 
-            background: var(--dark-bg); 
-            color: var(--text-main); 
-            overflow: hidden; 
-            height: 100vh; 
-            -webkit-user-select: none; user-select: none;
-        }
-
-        /* --- AUTH SYSTEM UI --- */
-        #auth-gate {
-            position: fixed; inset: 0; background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
-            z-index: 10000; display: flex; align-items: center; justify-content: center;
-        }
-
-        .auth-card {
-            background: var(--sidebar-bg); padding: 40px; border-radius: 16px;
-            width: 420px; border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
-        }
-
-        .auth-card h1 { font-weight: 900; font-size: 32px; color: var(--goblocks-red); text-align: center; margin-bottom: 30px; }
-
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #94a3b8; text-transform: uppercase; }
-        
-        input { 
-            width: 100%; padding: 14px; border-radius: 8px; border: 2px solid #334155; 
-            background: #0f172a; color: white; transition: 0.2s; outline: none;
-        }
-
-        input:focus { border-color: var(--goblocks-red); }
-
-        .btn-primary {
-            width: 100%; padding: 14px; border-radius: 8px; border: none;
-            background: var(--goblocks-red); color: white; font-weight: 800; 
-            cursor: pointer; transition: 0.3s; margin-top: 10px;
-        }
-
-        .btn-secondary {
-            width: 100%; background: transparent; color: #94a3b8; border: 1px solid #334155;
-            padding: 10px; margin-top: 10px; cursor: pointer; border-radius: 8px;
-        }
-
-        /* --- TOP HUD SYSTEM --- */
+        /* --- CRITICAL: FIXED BLOCK COUNT (TOP RIGHT) --- */
         #top-hud {
-            position: fixed; top: 20px; right: 20px; display: none; gap: 15px; z-index: 999;
+            position: fixed; top: 25px; right: 25px; 
+            z-index: 99999; /* Higher priority */
+            display: none; align-items: center; gap: 15px;
         }
-
         .stat-pill {
-            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px);
-            padding: 10px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
-            display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px);
+            padding: 12px 25px; border-radius: 8px; border: 2px solid var(--accent-gold);
+            display: flex; align-items: center; gap: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
+        .currency-icon { width: 22px; height: 22px; background: var(--accent-gold); border-radius: 4px; box-shadow: 0 0 15px var(--accent-gold); }
+        #global-block-count { font-weight: 900; font-size: 1.2rem; color: var(--accent-gold); }
 
-        .currency-icon { width: 20px; height: 20px; background: var(--accent-gold); border-radius: 4px; box-shadow: 0 0 10px var(--accent-gold); }
-
-        /* --- MAIN LAYOUT --- */
-        .app-shell { display: none; height: 100vh; width: 100vw; }
-
-        nav.sidebar {
-            width: var(--sidebar-width); background: var(--sidebar-bg);
-            border-right: 1px solid rgba(255,255,255,0.05);
-            display: flex; flex-direction: column; padding: 30px 15px;
+        /* --- AVATAR SYSTEM --- */
+        .avatar-preview {
+            width: 180px; height: 240px; margin: 20px auto; position: relative;
+            display: flex; flex-direction: column; align-items: center;
         }
-
-        .nav-link {
-            padding: 16px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer;
-            transition: 0.2s; font-weight: 700; color: #94a3b8; display: flex; align-items: center;
-        }
-
-        .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
-        .nav-link.active { background: var(--goblocks-red); color: white; box-shadow: 0 10px 15px -3px rgba(225, 29, 72, 0.4); }
-
-        .logout-section {
-            margin-top: auto; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer; display: flex; align-items: center; gap: 10px; color: #ef4444; font-weight: 700;
-        }
-
-        .viewport { flex: 1; padding: 60px; overflow-y: auto; background: var(--dark-bg); position: relative; }
-
-        /* --- MODULE STYLES --- */
-        .grid-market { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .item-card { background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .av-part { border: 2px solid rgba(0,0,0,0.3); transition: 0.3s; }
+        .av-head { width: 50px; height: 50px; border-radius: 8px; margin-bottom: 5px; }
+        .av-torso { width: 90px; height: 100px; border-radius: 6px; position: relative; }
+        .av-legs { display: flex; gap: 10px; margin-top: 5px; }
+        .av-leg { width: 35px; height: 60px; border-radius: 4px; }
         
-        .mining-container { height: 70%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .mine-btn {
-            width: 200px; height: 200px; border-radius: 50%; border: 8px solid var(--goblocks-red);
-            background: #1e293b; color: white; font-size: 24px; font-weight: 900; cursor: pointer;
-            box-shadow: 0 0 50px rgba(225, 29, 72, 0.3); transition: 0.1s;
-        }
-        .mine-btn:active { transform: scale(0.95); background: var(--goblocks-red); }
-
-        .player-row {
-            background: var(--card-bg); padding: 15px 25px; border-radius: 12px;
-            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
-        }
+        /* --- APP LAYOUT --- */
+        .app-shell { display: none; height: 100vh; width: 100vw; }
+        #auth-gate { position: fixed; inset: 0; background: #0f172a; z-index: 100000; display: flex; align-items: center; justify-content: center; }
+        .auth-card { background: var(--sidebar-bg); padding: 40px; border-radius: 16px; width: 400px; border: 1px solid #334155; }
+        input { width: 100%; padding: 14px; border-radius: 8px; border: 2px solid #334155; background: #0f172a; color: white; margin-bottom: 15px; outline: none; }
+        .btn-primary { width: 100%; padding: 14px; background: var(--goblocks-red); color: white; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; }
+        
+        nav.sidebar { width: 280px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 30px 15px; border-right: 1px solid #334155; }
+        .nav-link { padding: 16px 20px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-weight: 700; color: #94a3b8; }
+        .nav-link.active { background: var(--goblocks-red); color: white; }
+        .logout-section { margin-top: auto; color: #ef4444; font-weight: 700; cursor: pointer; padding: 20px; border-top: 1px solid #334155; }
+        .viewport { flex: 1; padding: 60px; overflow-y: auto; }
+        
+        .color-grid { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+        .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
+        .color-dot:hover { border-color: white; }
     </style>
 </head>
 <body>
 
-    <!-- HUD (BLOCK COUNT RIGHT UP) -->
     <div id="top-hud">
         <div class="stat-pill">
             <div class="currency-icon"></div>
@@ -126,141 +65,120 @@
         </div>
     </div>
 
-    <!-- AUTHENTICATION GATE -->
     <div id="auth-gate">
         <div class="auth-card">
-            <h1>GOblocks</h1>
-            <div class="input-group">
-                <label>Username</label>
-                <input type="text" id="u-input" placeholder="Min 3 characters">
-            </div>
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" id="p-input" placeholder="••••••••">
-            </div>
-            <button class="btn-primary" onclick="Core.Auth.register()">Create Account</button>
-            <button class="btn-secondary" onclick="Core.Auth.login()">Existing User Login</button>
+            <h1 style="text-align:center; margin-bottom: 30px; color:var(--goblocks-red); font-weight:900;">GOblocks</h1>
+            <input type="text" id="u-input" placeholder="Username">
+            <input type="password" id="p-input" placeholder="Password">
+            <button class="btn-primary" onclick="Core.Auth.login()">Enter Engine</button>
+            <p onclick="Core.Auth.register()" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px; color:#94a3b8;">Create New Account</p>
         </div>
     </div>
 
-    <!-- MAIN ENGINE INTERFACE -->
     <div class="app-shell" id="main-engine">
         <nav class="sidebar">
-            <div style="font-weight:900; font-size: 22px; margin-bottom: 40px; padding-left: 20px;">GO<span style="color:var(--goblocks-red)">BLOCKS</span></div>
-            
-            <div class="nav-link active" onclick="Core.Router.go('home', this)">Dashboard</div>
+            <div style="font-weight:900; font-size: 24px; margin-bottom: 40px; text-align:center;">GO<span style="color:var(--goblocks-red)">BLOCKS</span></div>
+            <div class="nav-link active" onclick="Core.Router.go('home', this)">Home</div>
+            <div class="nav-link" onclick="Core.Router.go('avatar', this)">Avatar Editor</div>
             <div class="nav-link" onclick="Core.Router.go('market', this)">Market Place</div>
             <div class="nav-link" onclick="Core.Router.go('mining', this)">Block Mining</div>
             <div class="nav-link" onclick="Core.Router.go('players', this)">New Players</div>
-
-            <div class="logout-section" onclick="location.reload()">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4m7 14l5-5m0 0l-5-5m5 5H9"></path></svg>
-                Logout
-            </div>
+            <div class="logout-section" onclick="location.reload()">Logout Account</div>
         </nav>
-
         <main class="viewport" id="view-target"></main>
     </div>
 
     <script>
-        /** 
-         * GOblocks HIGH-LEVEL ENGINE CORE
-         * Version: 1.0.4 - GitHub Pages Ready
-         */
         const Core = (() => {
-            // Internal State Encapsulation
-            const _STATE = {
-                user: null,
-                db: () => JSON.parse(localStorage.getItem('gb_sys_v1') || '[]')
-            };
-
-            const _save = (data) => localStorage.setItem('gb_sys_v1', JSON.stringify(data));
+            const _STATE = { user: null, db: () => JSON.parse(localStorage.getItem('gb_v2') || '[]') };
+            const _save = (data) => localStorage.setItem('gb_v2', JSON.stringify(data));
 
             return {
                 Auth: {
                     register: () => {
-                        const u = document.getElementById('u-input').value.trim();
-                        const p = document.getElementById('p-input').value.trim();
-                        if(u.length < 3 || p.length < 4) return alert("Security Error: Credentials too weak.");
-                        
+                        const u = document.getElementById('u-input').value;
+                        const p = document.getElementById('p-input').value;
                         const users = _STATE.db();
-                        if(users.find(x => x.u === u)) return alert("Identity Error: Username taken.");
-
-                        users.push({ u, p, b: 0, ts: Date.now() });
-                        _save(users);
-                        alert("Account Encrypted. Please Login.");
+                        if(users.find(x => x.u === u)) return alert("User exists");
+                        users.push({ u, p, b: 0, color: '#3b82f6', ts: Date.now() });
+                        _save(users); alert("Account created!");
                     },
                     login: () => {
-                        const u = document.getElementById('u-input').value.trim();
-                        const p = document.getElementById('p-input').value.trim();
+                        const u = document.getElementById('u-input').value;
+                        const p = document.getElementById('p-input').value;
                         const user = _STATE.db().find(x => x.u === u && x.p === p);
-
                         if(user) {
                             _STATE.user = user;
                             document.getElementById('auth-gate').style.display = 'none';
                             document.getElementById('main-engine').style.display = 'flex';
                             document.getElementById('top-hud').style.display = 'flex';
-                            Core.UI.refreshHUD();
+                            Core.UI.update();
                             Core.Router.go('home');
-                        } else {
-                            alert("Access Denied: Invalid Credentials.");
-                        }
+                        } else { alert("Invalid login"); }
                     }
                 },
-
                 Router: {
                     go: (page, el) => {
                         const target = document.getElementById('view-target');
-                        if(el) {
-                            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-                            el.classList.add('active');
-                        }
-
+                        if(el) { document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
+                        
                         const modules = {
-                            home: `<h1>Dashboard</h1><p style="color:#94a3b8; margin-top:10px;">Welcome back, <b>${_STATE.user.u}</b>. Start mining blocks to climb the ranks.</p>`,
-                            market: `<h1>Market Place</h1><div class="grid-market" style="margin-top:30px;">
-                                <div class="item-card"><h3>Elite Sparkles</h3><p>Price: 500 B</p></div>
-                                <div class="item-card"><h3>Dev Wings</h3><p>Price: 1200 B</p></div>
-                                <div class="item-card"><h3>Block Sword</h3><p>Price: 250 B</p></div>
+                            home: `<h1>Welcome, ${_STATE.user.u}</h1><div class="avatar-preview">${Core.UI.drawAvatar(_STATE.user.color)}</div>`,
+                            avatar: `<h1>Avatar Editor</h1>
+                                <div class="avatar-preview" id="edit-av">${Core.UI.drawAvatar(_STATE.user.color)}</div>
+                                <div class="color-grid">
+                                    ${['#ef4444', '#3b82f6', '#10b981', '#fbbf24', '#ffffff', '#000000'].map(c => 
+                                        `<div class="color-dot" style="background:${c}" onclick="Core.Mechanics.setColor('${c}')"></div>`
+                                    ).join('')}
+                                </div>`,
+                            mining: `<div style="text-align:center; padding-top:100px;">
+                                <h1>Mining Hub</h1><br>
+                                <button onclick="Core.Mechanics.mine()" style="width:200px; height:200px; border-radius:50%; background:var(--goblocks-red); color:white; font-size:30px; font-weight:900; border:10px solid #ffffff33; cursor:pointer;">MINE</button>
                             </div>`,
-                            mining: `<div class="mining-container">
-                                <h1 style="margin-bottom:10px;">Block Mining</h1>
-                                <p style="margin-bottom:30px; color:#94a3b8;">Click the core to extract currency</p>
-                                <button class="mine-btn" onclick="Core.Mechanics.mine()">MINE</button>
-                            </div>`,
-                            players: `<h1>New Players</h1><div id="p-list" style="margin-top:30px;"></div>`
+                            market: `<h1>Marketplace</h1><p>Items loading...</p>`,
+                            players: `<h1>New Players</h1><div id="p-list"></div>`
                         };
-
                         target.innerHTML = modules[page];
                         if(page === 'players') Core.Mechanics.loadPlayers();
                     }
                 },
-
                 Mechanics: {
                     mine: () => {
                         _STATE.user.b += 1;
+                        Core.UI.update();
                         const users = _STATE.db();
                         const idx = users.findIndex(x => x.u === _STATE.user.u);
                         users[idx].b = _STATE.user.b;
                         _save(users);
-                        Core.UI.refreshHUD();
+                    },
+                    setColor: (c) => {
+                        _STATE.user.color = c;
+                        document.getElementById('edit-av').innerHTML = Core.UI.drawAvatar(c);
+                        const users = _STATE.db();
+                        const idx = users.findIndex(x => x.u === _STATE.user.u);
+                        users[idx].color = c;
+                        _save(users);
                     },
                     loadPlayers: () => {
                         const list = document.getElementById('p-list');
-                        const players = _STATE.db().sort((a,b) => b.ts - a.ts);
-                        list.innerHTML = players.map(p => `
-                            <div class="player-row">
-                                <div><span style="color:#94a3b8">User:</span> <b>${p.u}</b></div>
-                                <div style="color:var(--accent-gold)">${p.b} Blocks</div>
+                        list.innerHTML = _STATE.db().reverse().map(p => `
+                            <div style="background:var(--card-bg); padding:15px; margin-top:10px; border-radius:8px; display:flex; align-items:center; gap:20px;">
+                                <div style="width:30px; height:30px; background:${p.color}; border-radius:4px;"></div>
+                                <b>${p.u}</b> <span>Joined: ${new Date(p.ts).toLocaleDateString()}</span>
                             </div>
                         `).join('');
                     }
                 },
-
                 UI: {
-                    refreshHUD: () => {
-                        document.getElementById('global-block-count').innerText = _STATE.user.b.toLocaleString();
-                    }
+                    update: () => { document.getElementById('global-block-count').innerText = _STATE.user.b.toLocaleString(); },
+                    drawAvatar: (color) => `
+                        <div class="av-head av-part" style="background:${color}"></div>
+                        <div class="av-torso av-part" style="background:${color}"></div>
+                        <div class="av-legs">
+                            <div class="av-leg av-part" style="background:${color}"></div>
+                            <div class="av-leg av-part" style="background:${color}"></div>
+                        </div>
+                    `
                 }
             };
         })();
