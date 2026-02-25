@@ -3,401 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOblocks | Titan Platform v7.0</title>
-    <!-- 
-       GOblocks GLOBAL DESIGN SYSTEM
-       VERSION: 7.0.4 "INFINITY"
-       LICENSED FOR HIGH-COMPLEXITY ENVIRONMENTS
-    -->
+    <title>GOblocks | Platform</title>
     <style>
-        /* SECTION 1: CORE VARIABLES & GLOBAL RESET */
         :root {
-            --bg-deep: #000000;
-            --bg-elevated: #0a0a0a;
-            --bg-card: #111111;
-            --border-soft: #222222;
-            --border-hard: #444444;
-            --white: #ffffff;
-            --gray-sub: #666666;
-            --gray-dim: #333333;
-            --accent-green: #00ff88;
-            --accent-blue: #0084ff;
-            --danger: #ff3333;
-            --nav-h: 65px;
-            --side-w: 280px;
-            --skin-color: #ffdbac;
-            --trans: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+            --bg-body: #000000;
+            --bg-card: #0a0a0a;
+            --bg-nav: #000000;
+            --border: #1a1a1a;
+            --accent: #ffffff;
+            --text-dim: #666666;
+            --skin: #ffdbac;
+            --sidebar-w: 250px;
         }
 
-        * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        * { box-sizing: border-box; }
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
-            background: var(--bg-deep); color: var(--white);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-body); color: #fff;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
         }
 
-        /* SECTION 2: THE AUTHENTICATION SHIELD */
-        #gatekeeper {
-            position: fixed; inset: 0; background: var(--bg-deep);
-            z-index: 99999; display: flex; align-items: center; justify-content: center;
+        /* --- MANDATORY LOGIN WALL --- */
+        #auth-wall {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
         }
-        .gate-modal {
-            background: var(--bg-elevated); border: 2px solid var(--border-soft);
-            padding: 80px; width: 500px; border-radius: 4px; text-align: center;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+        .auth-card {
+            background: var(--bg-card); padding: 50px; border: 1px solid var(--border);
+            width: 400px; text-align: center; border-radius: 4px;
         }
-        .gate-modal h1 { font-size: 64px; font-weight: 900; margin: 0 0 10px 0; letter-spacing: -4px; }
-        .gate-modal p { color: var(--gray-sub); margin-bottom: 50px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
-        
-        .field-group { margin-bottom: 25px; text-align: left; }
-        .field-label { display: block; font-size: 10px; font-weight: 900; color: var(--gray-sub); text-transform: uppercase; margin-bottom: 12px; }
-        .gate-input {
-            width: 100%; background: #000; border: 1px solid var(--border-soft);
-            padding: 20px; color: #fff; font-size: 18px; outline: none; transition: var(--trans);
+        .auth-card h1 { font-size: 40px; font-weight: 900; margin: 0 0 10px 0; letter-spacing: -2px; }
+        .auth-input {
+            width: 100%; background: #000; border: 1px solid var(--border);
+            padding: 15px; color: #fff; margin-bottom: 20px; outline: none;
         }
-        .gate-input:focus { border-color: var(--white); background: #050505; }
-        .btn-gate {
-            width: 100%; padding: 22px; background: var(--white); color: #000;
-            border: none; font-weight: 900; font-size: 15px; cursor: pointer; 
-            text-transform: uppercase; letter-spacing: 3px; margin-top: 20px;
+        .btn-auth {
+            width: 100%; padding: 15px; background: #fff; color: #000;
+            border: none; font-weight: 900; cursor: pointer; text-transform: uppercase;
         }
 
-        /* SECTION 3: TOP NAVIGATION BAR */
-        header.nav-shell {
-            height: var(--nav-h); background: #000; border-bottom: 1px solid var(--border-soft);
-            display: flex; align-items: center; padding: 0 40px; position: sticky; top: 0; z-index: 10000;
+        /* --- GLOBAL NAVIGATION --- */
+        header {
+            height: 60px; background: #000; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; padding: 0 30px; position: sticky; top: 0; z-index: 1000;
         }
-        .nav-brand { font-size: 26px; font-weight: 900; cursor: pointer; letter-spacing: -2px; margin-right: 60px; }
-        .nav-search-wrap { flex: 1; max-width: 600px; position: relative; }
-        .nav-search-wrap input { 
-            width: 100%; background: #0a0a0a; border: 1px solid var(--border-soft);
-            padding: 12px 25px; border-radius: 4px; color: #fff; font-size: 14px; outline: none;
+        .logo { font-weight: 900; font-size: 22px; cursor: pointer; margin-right: 40px; }
+        .nav-meta { margin-left: auto; display: flex; align-items: center; gap: 25px; }
+
+        /* --- MAIN LAYOUT --- */
+        #main-layout { display: none; height: calc(100vh - 60px); }
+        .active-session { display: flex !important; }
+
+        aside.sidebar {
+            width: var(--sidebar-w); border-right: 1px solid var(--border);
+            padding: 30px 15px; display: flex; flex-direction: column; gap: 5px;
         }
-        .nav-metrics { margin-left: auto; display: flex; align-items: center; gap: 40px; }
-        .metric-gbux { color: var(--accent-green); font-weight: 900; font-size: 15px; display: flex; align-items: center; gap: 10px; }
-
-        /* SECTION 4: THE APP ARCHITECTURE */
-        #titan-root { display: none; height: calc(100vh - var(--nav-h)); flex-direction: row; }
-        .titan-active { display: flex !important; }
-
-        aside.rail-sidebar {
-            width: var(--side-w); border-right: 1px solid var(--border-soft);
-            padding: 40px 20px; display: flex; flex-direction: column; gap: 8px;
-            background: var(--bg-elevated);
+        .nav-link {
+            padding: 12px 15px; color: var(--text-dim); cursor: pointer;
+            font-weight: 700; font-size: 13px; text-transform: uppercase;
         }
-        .rail-node {
-            padding: 18px 25px; border-radius: 4px; font-weight: 800; font-size: 12px;
-            color: var(--gray-sub); cursor: pointer; display: flex; align-items: center; gap: 18px;
-            text-transform: uppercase; letter-spacing: 2px; transition: var(--trans);
+        .nav-link:hover, .link-active { background: #111; color: #fff; }
+
+        main.viewport { flex: 1; padding: 40px; overflow-y: auto; }
+        .page { display: none; max-width: 1000px; margin: 0 auto; }
+        .page-active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+
+        /* --- DASHBOARD & CARDS --- */
+        .card { background: var(--bg-card); border: 1px solid var(--border); padding: 30px; margin-bottom: 25px; border-radius: 4px; }
+        .card h2 { margin-top: 0; font-weight: 800; font-size: 28px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+        /* --- AVATAR RIG (FULL BODY) --- */
+        .avatar-canvas {
+            width: 100%; height: 400px; background: #050505; border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center; position: relative;
         }
-        .rail-node:hover, .node-active { background: var(--bg-card); color: #fff; }
-        .rail-node i { font-style: normal; font-size: 20px; opacity: 0.6; }
+        .rig-main { position: relative; width: 60px; height: 100px; transform: scale(1.6); }
+        .rig-main div { position: absolute; background: var(--skin); border: 1px solid rgba(0,0,0,0.2); }
+        .head { width: 40px; height: 40px; top: -45px; left: 10px; border-radius: 4px; }
+        .torso { width: 60px; height: 85px; top: 0; left: 0; }
+        .arm-l { width: 28px; height: 80px; top: 0; left: -32px; }
+        .arm-r { width: 28px; height: 80px; top: 0; right: -32px; }
+        .leg-l { width: 28px; height: 85px; top: 88px; left: 0; }
+        .leg-r { width: 28px; height: 85px; top: 88px; right: 4px; }
 
-        main.viewport-scroll { flex: 1; padding: 80px; overflow-y: scroll; background: var(--bg-deep); }
-        .view-section { display: none; max-width: 1300px; margin: 0 auto; animation: viewIn 0.4s ease-out; }
-        .view-visible { display: block; }
-        @keyframes viewIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- STATUS FEED --- */
+        #status-input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 15px; margin-bottom: 10px; }
+        .post { border-left: 2px solid var(--accent); padding-left: 20px; margin-bottom: 20px; }
+        .post b { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 5px; }
 
-        /* SECTION 5: MODULAR UI COMPONENTS */
-        .panel-large { background: var(--bg-card); border: 2px solid var(--border-soft); padding: 60px; border-radius: 4px; margin-bottom: 50px; }
-        .panel-large h1 { font-size: 52px; font-weight: 900; margin: 0 0 20px 0; letter-spacing: -3px; }
-        .data-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .data-card { background: #000; border: 1px solid var(--border-soft); padding: 35px; border-radius: 2px; }
-        .data-card h4 { margin: 0 0 15px 0; font-size: 11px; text-transform: uppercase; color: var(--gray-sub); letter-spacing: 2px; }
-        .data-card p { font-size: 32px; font-weight: 900; margin: 0; }
-
-        /* SECTION 6: THE AVATAR RIGGING ENGINE */
-        .avatar-lab-container { display: grid; grid-template-columns: 1fr 450px; gap: 80px; align-items: start; }
-        .rig-viewport {
-            aspect-ratio: 1/1; background: radial-gradient(circle at top, #111 0%, #000 100%);
-            border: 2px solid var(--border-soft); display: flex; align-items: center; justify-content: center;
-            perspective: 2000px; overflow: hidden; box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
-        }
-        .rig-assembly { position: relative; width: 120px; height: 220px; transform-style: preserve-3d; transition: transform 0.8s ease; }
-        .rig-limb { position: absolute; background: var(--skin-color); border: 2px solid rgba(0,0,0,0.3); transition: background 0.4s ease; box-shadow: inset 0 0 20px rgba(0,0,0,0.1); }
-        
-        .head-unit { width: 60px; height: 60px; top: -75px; left: 30px; border-radius: 6px; z-index: 20; }
-        .torso-unit { width: 120px; height: 160px; top: 0; left: 0; border-radius: 4px; }
-        .arm-unit-l { width: 50px; height: 160px; top: 0; left: -58px; border-radius: 2px; }
-        .arm-unit-r { width: 50px; height: 160px; top: 0; right: -58px; border-radius: 2px; }
-        .leg-unit-l { width: 55px; height: 160px; top: 165px; left: 0; border-radius: 2px; }
-        .leg-unit-r { width: 55px; height: 160px; top: 165px; right: 0; border-radius: 2px; }
-
-        /* SECTION 7: MARKETPLACE MODULE */
-        .market-vault { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
-        .asset-box { background: var(--bg-card); border: 1px solid var(--border-soft); padding: 25px; text-align: center; transition: var(--trans); cursor: pointer; }
-        .asset-box:hover { border-color: var(--white); transform: scale(1.02); }
-        .asset-icon { height: 180px; background: #000; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; font-size: 60px; border-radius: 4px; }
-        .buy-trigger { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: 900; cursor: pointer; margin-top: 20px; border-radius: 2px; }
-
-        /* SECTION 8: SOCIAL & DISCOVERY LIST */
-        .social-sidebar { width: 350px; background: var(--bg-elevated); border-left: 1px solid var(--border-soft); padding: 60px 40px; }
-        .user-strip { display: flex; align-items: center; gap: 20px; padding: 20px; border-bottom: 1px solid #111; transition: var(--trans); }
-        .user-strip:hover { background: #050505; }
-        .u-avatar-circ { width: 45px; height: 45px; background: #1a1a1a; border-radius: 50%; border: 1px solid var(--border-soft); }
-        .u-info-block { display: flex; flex-direction: column; gap: 4px; }
-        .u-name-val { font-weight: 900; font-size: 15px; }
-        .u-stat-val { color: var(--accent-green); font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
-
+        /* --- MARKET & DISCOVER --- */
+        .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        .item-card { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; text-align: center; }
+        .item-icon { font-size: 40px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-<!-- COMPONENT: AUTH GATE -->
-<div id="gatekeeper">
-    <div class="gate-modal">
+<div id="auth-wall">
+    <div class="auth-card">
         <h1>GOblocks</h1>
-        <p>Infinity Engine v7.0.4</p>
-        <div class="field-group">
-            <label class="field-label">Global Handle Identifier</label>
-            <input type="text" id="handle-field" class="gate-input" placeholder="Enter Unique Handle">
-        </div>
-        <button id="auth-trigger" class="btn-gate">Initialize Session</button>
+        <input type="text" id="reg-name" class="auth-input" placeholder="USERNAME">
+        <button id="auth-btn" class="btn-auth">Connect to Platform</button>
     </div>
 </div>
 
-<!-- COMPONENT: TOP NAVIGATION -->
-<header class="nav-shell">
-    <div class="nav-brand" onclick="Titan.Router.navigate('dashboard')">GOblocks</div>
-    <div class="nav-search-wrap"><input type="text" placeholder="Scanning grid for assets or entities..."></div>
-    <div class="nav-metrics">
-        <div class="metric-gbux">G$ <span id="gbux-readout">0</span></div>
-        <div class="nav-user-profile" onclick="Titan.Router.navigate('avatar')">
-            <span id="handle-readout" style="font-weight: 900; font-size: 14px;">---</span>
-        </div>
+<header>
+    <div class="logo" onclick="App.nav('home')">GOblocks</div>
+    <div class="nav-meta">
+        <div style="font-weight: 800; font-size: 13px;">G$ <span id="gbux-count">0</span></div>
+        <div id="user-tag" style="font-weight: 900; font-size: 13px; text-transform: uppercase;"></div>
     </div>
 </header>
 
-<div id="titan-root">
-    <!-- COMPONENT: RAIL SIDEBAR -->
-    <aside class="rail-sidebar">
-        <div class="rail-node node-active" id="rn-dashboard" onclick="Titan.Router.navigate('dashboard')"><i>🏠</i> Dashboard</div>
-        <div class="rail-node" id="rn-avatar" onclick="Titan.Router.navigate('avatar')"><i>👤</i> Avatar Lab</div>
-        <div class="rail-node" id="rn-discovery" onclick="Titan.Router.navigate('discovery')"><i>🌎</i> Discovery</div>
-        <div class="rail-node" id="rn-market" onclick="Titan.Router.navigate('market')"><i>🛒</i> Marketplace</div>
-        <div style="margin-top: auto;">
-            <div class="rail-node" style="color: var(--danger);" onclick="Titan.System.logout()"><i>🚪</i> Exit Grid</div>
-        </div>
+<div id="main-layout">
+    <aside class="sidebar">
+        <div class="nav-link link-active" id="l-home" onclick="App.nav('home')">Home</div>
+        <div class="nav-link" id="l-avatar" onclick="App.nav('avatar')">Avatar</div>
+        <div class="nav-link" id="l-discover" onclick="App.nav('discover')">Discover</div>
+        <div class="nav-link" id="l-market" onclick="App.nav('market')">Market</div>
+        <div class="nav-link" onclick="App.logout()" style="margin-top:auto; color:red;">Logout</div>
     </aside>
 
-    <!-- COMPONENT: VIEWPORT -->
-    <main class="viewport-scroll">
-        <!-- NODE: DASHBOARD -->
-        <section id="node-dashboard" class="view-section view-visible">
-            <div class="panel-large">
-                <h1>Dashboard</h1>
-                <p style="color: var(--gray-sub);">Node synchronized. Identity verified. Welcome back to the grid, <span id="span-handle">Entity</span>.</p>
+    <main class="viewport">
+        <!-- HOME PAGE -->
+        <section id="p-home" class="page page-active">
+            <div class="card">
+                <h2>Welcome, <span id="welcome-name"></span></h2>
+                <textarea id="status-input" placeholder="What's on your mind?"></textarea>
+                <button class="btn-auth" style="width:auto; padding: 10px 30px;" onclick="App.postStatus()">Post Status</button>
             </div>
-            <div class="data-grid">
-                <div class="data-card"><h4>Grid Credits</h4><p id="card-val-gbux">0</p></div>
-                <div class="data-card"><h4>Synced Assets</h4><p id="card-val-inv">0 Items</p></div>
-                <div class="data-card"><h4>Security Level</h4><p>Tier 1</p></div>
+            <div class="card">
+                <h3>My Feed</h3>
+                <div id="feed-container"></div>
             </div>
         </section>
 
-        <!-- NODE: AVATAR LAB -->
-        <section id="node-avatar" class="view-section">
-            <h1>Avatar Lab</h1>
-            <div class="avatar-lab-container">
-                <div class="rig-viewport">
-                    <div class="rig-assembly" id="main-rig">
-                        <div class="rig-limb head-unit"></div>
-                        <div class="rig-limb arm-unit-l"></div>
-                        <div class="rig-limb torso-unit"></div>
-                        <div class="rig-limb arm-unit-r"></div>
-                        <div class="rig-limb leg-unit-l"></div>
-                        <div class="rig-limb leg-unit-r"></div>
+        <!-- AVATAR PAGE -->
+        <section id="p-avatar" class="page">
+            <h2>Avatar Editor</h2>
+            <div class="card" style="display:grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div class="avatar-canvas">
+                    <div class="rig-main">
+                        <div class="head"></div><div class="arm-l"></div><div class="torso"></div><div class="arm-r"></div><div class="leg-l"></div><div class="leg-r"></div>
                     </div>
                 </div>
-                <div class="panel-large" style="padding: 40px;">
-                    <h3>Skin Sequencer</h3>
-                    <div id="swatch-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
-                        <!-- INJECTED BY ENGINE -->
-                    </div>
-                    <hr style="border: 0; border-top: 1px solid #222; margin: 50px 0;">
-                    <h3>Stored Gear</h3>
-                    <div id="inv-display-list" style="color: #444; font-size: 14px;">No external gear detected.</div>
+                <div>
+                    <h3>Skin Tone</h3>
+                    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px;" id="skin-grid"></div>
                 </div>
             </div>
         </section>
 
-        <!-- NODE: DISCOVERY -->
-        <section id="node-discovery" class="view-section">
-            <h1>Discovery</h1>
-            
-                <!-- INJECTED BY ENGINE -->
-            </div>
+        <!-- DISCOVER -->
+        <section id="p-discover" class="page">
+            <h2>Discover People</h2>
+            <div class="item-grid" id="discover-grid"></div>
         </section>
 
-        <!-- NODE: MARKETPLACE -->
-        <section id="node-market" class="view-section">
-            <h1>Marketplace</h1>
-            <div class="market-vault" id="asset-list">
-                <!-- INJECTED BY ENGINE -->
-            </div>
+        <!-- MARKET -->
+        <section id="p-market" class="page">
+            <h2>Marketplace</h2>
+            <div class="item-grid" id="market-grid"></div>
         </section>
     </main>
-
-    <!-- COMPONENT: SOCIAL SIDEBAR -->
-    <aside class="social-sidebar">
-        <h4 style="color: var(--gray-sub); font-size: 11px; letter-spacing: 4px; margin-bottom: 40px; text-transform: uppercase;">Grid Entities</h4>
-        <div id="global-activity-feed"></div>
-    </aside>
 </div>
 
 <script>
-/**
- * GOblocks TITAN ENGINE v7.0.4
- * FULL-SCALE PLATFORM SIMULATION SCRIPT
- * 1200+ LINES LOGIC DENSITY
- */
-document.addEventListener('DOMContentLoaded', () => {
-    window.Titan = {
-        Data: {
-            session: JSON.parse(localStorage.getItem('goblox_titan_v7')) || null,
-            catalog: [
-                { id: 1001, name: "Void Mask", price: 200, icon: "👺" },
-                { id: 1002, name: "Neon Halo", price: 600, icon: "😇" },
-                { id: 1003, name: "Pulse Cape", price: 1500, icon: "🧥" },
-                { id: 1004, name: "Grid Runners", price: 400, icon: "👟" },
-                { id: 1005, name: "Cyber Sword", price: 3000, icon: "⚔️" }
-            ]
-        },
+const App = {
+    state: JSON.parse(localStorage.getItem('goblocks_vfinal')) || null,
 
-        System: {
-            init() {
-                const btn = document.getElementById('auth-trigger');
-                if(btn) btn.addEventListener('click', () => this.executeAuth());
-                
-                if(Titan.Data.session) this.boot();
-                this.renderStatic();
-            },
+    init() {
+        document.getElementById('auth-btn').onclick = () => this.register();
+        if (this.state) this.mount();
+        this.renderStatic();
+    },
 
-            executeAuth() {
-                const h = document.getElementById('handle-field').value.trim();
-                if(h.length < 2) return alert("AUTH_ERROR: Handle string too short.");
-                Titan.Data.session = {
-                    handle: h,
-                    skin: '#ffdbac',
-                    balance: 1000,
-                    inventory: [],
-                    joined: new Date().toLocaleDateString()
-                };
-                this.sync();
-                location.reload();
-            },
+    register() {
+        const name = document.getElementById('reg-name').value.trim();
+        if (name.length < 2) return alert("Username required.");
+        this.state = { name, skin: '#ffdbac', gbux: 500, posts: [], inventory: [] };
+        this.save();
+        this.mount();
+    },
 
-            boot() {
-                document.getElementById('gatekeeper').style.display = 'none';
-                document.getElementById('titan-root').classList.add('titan-active');
-                this.refreshUI();
-            },
+    mount() {
+        document.getElementById('auth-wall').style.display = 'none';
+        document.getElementById('main-layout').classList.add('active-session');
+        document.getElementById('user-tag').innerText = this.state.name;
+        document.getElementById('welcome-name').innerText = this.state.name;
+        document.getElementById('gbux-count').innerText = this.state.gbux;
+        document.documentElement.style.setProperty('--skin', this.state.skin);
+        this.renderFeed();
+        this.renderDiscover();
+    },
 
-            sync() { localStorage.setItem('goblox_titan_v7', JSON.stringify(Titan.Data.session)); },
+    nav(t) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('link-active'));
+        document.getElementById('p-' + t).classList.add('page-active');
+        document.getElementById('l-' + t).classList.add('link-active');
+    },
 
-            logout() { localStorage.removeItem('goblox_titan_v7'); location.reload(); },
+    postStatus() {
+        const text = document.getElementById('status-input').value.trim();
+        if (!text) return;
+        this.state.posts.unshift({ user: this.state.name, text, time: new Date().toLocaleTimeString() });
+        document.getElementById('status-input').value = '';
+        this.save();
+        this.renderFeed();
+    },
 
-            refreshUI() {
-                if(!Titan.Data.session) return;
-                const s = Titan.Data.session;
-                document.getElementById('handle-readout').innerText = s.handle.toUpperCase();
-                document.getElementById('span-handle').innerText = s.handle;
-                document.getElementById('gbux-readout').innerText = s.balance;
-                document.getElementById('card-val-gbux').innerText = s.balance;
-                document.getElementById('card-val-inv').innerText = s.inventory.length + " Assets";
-                document.documentElement.style.setProperty('--skin-color', s.skin);
-                
-                this.renderMarket();
-                this.renderSocial();
-            },
+    renderFeed() {
+        const container = document.getElementById('feed-container');
+        container.innerHTML = this.state.posts.map(p => `
+            <div class="post"><b>${p.user} - ${p.time}</b>${p.text}</div>
+        `).join('');
+    },
 
-            renderStatic() {
-                const tones = ['#ffdbac', '#f1c27d', '#e0ac69', '#8d5524', '#ffffff', '#222222', '#00ff88', '#ff3333', '#0084ff', '#ffff00'];
-                const grid = document.getElementById('swatch-grid');
-                if(grid) {
-                    grid.innerHTML = tones.map(t => 
-                        `<div onclick="Titan.System.updateSkin('${t}')" style="background:${t}; height:60px; cursor:pointer; border:1px solid #111; border-radius:4px;"></div>`
-                    ).join('');
-                }
-            },
+    renderStatic() {
+        const tones = ['#ffdbac', '#f1c27d', '#e0ac69', '#8d5524', '#ffffff', '#333333', '#111111', '#00ff88'];
+        document.getElementById('skin-grid').innerHTML = tones.map(t => 
+            `<div onclick="App.setSkin('${t}')" style="background:${t}; height:45px; cursor:pointer; border:1px solid #222;"></div>`
+        ).join('');
 
-            renderMarket() {
-                const list = document.getElementById('asset-list');
-                if(list) {
-                    list.innerHTML = Titan.Data.catalog.map(a => `
-                        <div class="asset-box">
-                            <div class="asset-icon">${a.icon}</div>
-                            <b style="font-size:16px;">${a.name}</b><br>
-                            <small style="color:#666;">${a.price} G-BUX</small>
-                            <button class="buy-trigger" onclick="Titan.Actions.purchase(${a.id})">ACQUIRE</button>
-                        </div>
-                    `).join('');
-                }
-            },
+        const items = [{n:"Top Hat", i:"🎩"}, {n:"Shades", i:"🕶️"}, {n:"Crown", i:"👑"}];
+        document.getElementById('market-grid').innerHTML = items.map(i => `
+            <div class="item-card"><div class="item-icon">${i.i}</div><b>${i.n}</b><br><small>100 G-BUX</small></div>
+        `).join('');
+    },
 
-            renderSocial() {
-                const feed = document.getElementById('global-activity-feed');
-                const disc = document.getElementById('entity-list');
-                const users = [Titan.Data.session.handle, "Admin_Node", "Grid_Master", "Null_Entity"];
-                
-                if(feed) {
-                    feed.innerHTML = users.map(u => `
-                        <div class="user-strip">
-                            <div class="u-avatar-circ"></div>
-                            <div class="u-info-block">
-                                <div class="u-name-val">${u}</div>
-                                <div class="u-stat-val">Online</div>
-                            </div>
-                        </div>
-                    `).join('');
-                }
+    renderDiscover() {
+        if (!this.state) return;
+        document.getElementById('discover-grid').innerHTML = `
+            <div class="item-card"><div class="item-icon">👤</div><b>${this.state.name}</b><br><small>Online</small></div>
+        `;
+    },
 
-                if(disc) {
-                    disc.innerHTML = users.map(u => `
-                        <div class="asset-box">
-                            <div class="asset-icon">👤</div>
-                            <b>${u}</b><br><small style="color:var(--accent-green);">NODE_ACTIVE</small>
-                        </div>
-                    `).join('');
-                }
-            },
+    setSkin(c) {
+        this.state.skin = c;
+        document.documentElement.style.setProperty('--skin', c);
+        this.save();
+    },
 
-            updateSkin(c) {
-                Titan.Data.session.skin = c;
-                this.sync();
-                document.documentElement.style.setProperty('--skin-color', c);
-            }
-        },
+    save() { localStorage.setItem('goblocks_vfinal', JSON.stringify(this.state)); },
+    logout() { localStorage.removeItem('goblocks_vfinal'); location.reload(); }
+};
 
-        Actions: {
-            purchase(id) {
-                const a = Titan.Data.catalog.find(x => x.id === id);
-                if(Titan.Data.session.balance >= a.price) {
-                    Titan.Data.session.balance -= a.price;
-                    Titan.Data.session.inventory.push(a.name);
-                    Titan.System.sync();
-                    Titan.System.refreshUI();
-                    alert(`ACCESS_GRANTED: ${a.name} acquired.`);
-                } else {
-                    alert("ACCESS_DENIED: Insufficient credits.");
-                }
-            }
-        },
-
-        Router: {
-            navigate(target) {
-                document.querySelectorAll('.view-section').forEach(v => v.classList.remove('view-visible'));
-                document.querySelectorAll('.rail-node').forEach(n => n.classList.remove('node-active'));
-                document.getElementById('node-' + target).classList.add('view-visible');
-                document.getElementById('rn-' + target).classList.add('node-active');
-                window.scrollTo(0,0);
-            }
-        }
-    };
-
-    Titan.System.init();
-});
+App.init();
 </script>
 </body>
 </html>
