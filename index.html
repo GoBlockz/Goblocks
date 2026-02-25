@@ -6,198 +6,247 @@
     <title>GOblocks | Platform</title>
     <style>
         :root {
-            --bg-body: #000000;
-            --bg-card: #0a0a0a;
-            --bg-nav: #000000;
+            --bg: #000000;
+            --card: #0a0a0a;
             --border: #1a1a1a;
             --accent: #ffffff;
-            --text-dim: #666666;
+            --text-dim: #666;
             --skin: #ffdbac;
-            --sidebar-w: 250px;
+            --sidebar-w: 260px;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
         body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            background: var(--bg-body); color: #fff;
+            margin: 0; padding: 0; height: 100%; 
+            background: var(--bg); color: #fff;
             font-family: 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
         }
 
-        /* --- MANDATORY LOGIN WALL --- */
+        /* --- AUTH SYSTEM (LOGIN & SIGNUP) --- */
         #auth-wall {
             position: fixed; inset: 0; background: #000; z-index: 10000;
             display: flex; align-items: center; justify-content: center;
         }
         .auth-card {
-            background: var(--bg-card); padding: 50px; border: 1px solid var(--border);
-            width: 400px; text-align: center; border-radius: 4px;
+            background: var(--card); padding: 50px; border: 1px solid var(--border);
+            width: 420px; text-align: center; border-radius: 4px;
         }
-        .auth-card h1 { font-size: 40px; font-weight: 900; margin: 0 0 10px 0; letter-spacing: -2px; }
+        .auth-card h1 { font-size: 42px; font-weight: 900; margin-bottom: 10px; letter-spacing: -2px; }
         .auth-input {
             width: 100%; background: #000; border: 1px solid var(--border);
-            padding: 15px; color: #fff; margin-bottom: 20px; outline: none;
+            padding: 15px; color: #fff; margin-bottom: 15px; outline: none; border-radius: 4px;
         }
         .btn-auth {
             width: 100%; padding: 15px; background: #fff; color: #000;
             border: none; font-weight: 900; cursor: pointer; text-transform: uppercase;
         }
+        .auth-toggle { margin-top: 20px; font-size: 13px; color: var(--text-dim); cursor: pointer; }
+        .auth-toggle b { color: #fff; text-decoration: underline; }
 
-        /* --- GLOBAL NAVIGATION --- */
+        /* --- NAVIGATION --- */
         header {
-            height: 60px; background: #000; border-bottom: 1px solid var(--border);
+            height: 65px; background: #000; border-bottom: 1px solid var(--border);
             display: flex; align-items: center; padding: 0 30px; position: sticky; top: 0; z-index: 1000;
         }
-        .logo { font-weight: 900; font-size: 22px; cursor: pointer; margin-right: 40px; }
-        .nav-meta { margin-left: auto; display: flex; align-items: center; gap: 25px; }
+        .logo { font-weight: 900; font-size: 24px; cursor: pointer; margin-right: 40px; }
+        .nav-meta { margin-left: auto; display: flex; align-items: center; gap: 30px; }
 
-        /* --- MAIN LAYOUT --- */
-        #main-layout { display: none; height: calc(100vh - 60px); }
+        /* --- LAYOUT --- */
+        #main-layout { display: none; height: calc(100vh - 65px); }
         .active-session { display: flex !important; }
 
         aside.sidebar {
             width: var(--sidebar-w); border-right: 1px solid var(--border);
-            padding: 30px 15px; display: flex; flex-direction: column; gap: 5px;
+            padding: 35px 15px; display: flex; flex-direction: column; gap: 8px;
         }
         .nav-link {
-            padding: 12px 15px; color: var(--text-dim); cursor: pointer;
-            font-weight: 700; font-size: 13px; text-transform: uppercase;
+            padding: 14px 18px; color: var(--text-dim); cursor: pointer;
+            font-weight: 700; font-size: 13px; text-transform: uppercase; border-radius: 4px;
         }
         .nav-link:hover, .link-active { background: #111; color: #fff; }
 
-        main.viewport { flex: 1; padding: 40px; overflow-y: auto; }
-        .page { display: none; max-width: 1000px; margin: 0 auto; }
-        .page-active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+        main.viewport { flex: 1; padding: 50px; overflow-y: auto; }
+        .page { display: none; max-width: 1100px; margin: 0 auto; animation: fadeIn 0.4s ease; }
+        .page-active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- DASHBOARD & CARDS --- */
-        .card { background: var(--bg-card); border: 1px solid var(--border); padding: 30px; margin-bottom: 25px; border-radius: 4px; }
-        .card h2 { margin-top: 0; font-weight: 800; font-size: 28px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        /* --- COMPONENTS --- */
+        .card { background: var(--card); border: 1px solid var(--border); padding: 35px; margin-bottom: 30px; border-radius: 4px; }
+        .card h2 { margin-top: 0; font-weight: 900; font-size: 32px; }
+        
+        /* --- CLICKER GAME --- */
+        .clicker-box { text-align: center; padding: 60px; border: 2px dashed #333; cursor: pointer; border-radius: 12px; }
+        .clicker-box:active { transform: scale(0.98); background: #111; }
+        .click-count { font-size: 64px; font-weight: 900; color: #00ff88; margin: 20px 0; }
 
-        /* --- AVATAR RIG (FULL BODY) --- */
+        /* --- AVATAR RIG (HEAD, TORSO, 2 ARMS, 2 LEGS) --- */
         .avatar-canvas {
-            width: 100%; height: 400px; background: #050505; border: 1px solid var(--border);
+            width: 100%; height: 450px; background: #050505; border: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center; position: relative;
         }
-        .rig-main { position: relative; width: 60px; height: 100px; transform: scale(1.6); }
-        .rig-main div { position: absolute; background: var(--skin); border: 1px solid rgba(0,0,0,0.2); }
-        .head { width: 40px; height: 40px; top: -45px; left: 10px; border-radius: 4px; }
+        .rig { position: relative; width: 60px; height: 100px; transform: scale(1.8); }
+        .rig div { position: absolute; background: var(--skin); border: 1px solid rgba(0,0,0,0.2); }
+        .head { width: 42px; height: 42px; top: -48px; left: 9px; border-radius: 4px; }
         .torso { width: 60px; height: 85px; top: 0; left: 0; }
-        .arm-l { width: 28px; height: 80px; top: 0; left: -32px; }
-        .arm-r { width: 28px; height: 80px; top: 0; right: -32px; }
-        .leg-l { width: 28px; height: 85px; top: 88px; left: 0; }
-        .leg-r { width: 28px; height: 85px; top: 88px; right: 4px; }
+        .arm-l { width: 30px; height: 80px; top: 0; left: -34px; }
+        .arm-r { width: 30px; height: 80px; top: 0; right: -34px; }
+        .leg-l { width: 28px; height: 90px; top: 90px; left: 0; }
+        .leg-r { width: 28px; height: 90px; top: 90px; right: 0; }
 
-        /* --- STATUS FEED --- */
-        #status-input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 15px; margin-bottom: 10px; }
-        .post { border-left: 2px solid var(--accent); padding-left: 20px; margin-bottom: 20px; }
-        .post b { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 5px; }
-
-        /* --- MARKET & DISCOVER --- */
-        .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .item-card { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; text-align: center; }
-        .item-icon { font-size: 40px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
+<!-- AUTH SECTION -->
 <div id="auth-wall">
-    <div class="auth-card">
+    <div class="auth-card" id="auth-container">
         <h1>GOblocks</h1>
-        <input type="text" id="reg-name" class="auth-input" placeholder="USERNAME">
-        <button id="auth-btn" class="btn-auth">Connect to Platform</button>
+        <p id="auth-sub">Create your grid identity.</p>
+        <input type="text" id="auth-user" class="auth-input" placeholder="USERNAME">
+        <input type="password" id="auth-pass" class="auth-input" placeholder="PASSWORD">
+        <button id="auth-main-btn" class="btn-auth" onclick="App.handleAuth()">Sign Up</button>
+        <div class="auth-toggle" id="auth-switch" onclick="App.toggleAuth()">Already have an account? <b>Log In</b></div>
     </div>
 </div>
 
+<!-- TOP NAVIGATION -->
 <header>
     <div class="logo" onclick="App.nav('home')">GOblocks</div>
     <div class="nav-meta">
-        <div style="font-weight: 800; font-size: 13px;">G$ <span id="gbux-count">0</span></div>
-        <div id="user-tag" style="font-weight: 900; font-size: 13px; text-transform: uppercase;"></div>
+        <div style="font-weight: 900; color: #00ff88;">G$ <span id="val-gbux">0</span></div>
+        <div id="val-user" style="font-weight: 900; text-transform: uppercase; font-size: 13px;"></div>
     </div>
 </header>
 
 <div id="main-layout">
     <aside class="sidebar">
-        <div class="nav-link link-active" id="l-home" onclick="App.nav('home')">Home</div>
-        <div class="nav-link" id="l-avatar" onclick="App.nav('avatar')">Avatar</div>
-        <div class="nav-link" id="l-discover" onclick="App.nav('discover')">Discover</div>
+        <div class="nav-link link-active" id="l-home" onclick="App.nav('home')">Dashboard</div>
+        <div class="nav-link" id="l-avatar" onclick="App.nav('avatar')">Avatar Lab</div>
+        <div class="nav-link" id="l-clicker" onclick="App.nav('clicker')">G-BUX Mining</div>
         <div class="nav-link" id="l-market" onclick="App.nav('market')">Market</div>
-        <div class="nav-link" onclick="App.logout()" style="margin-top:auto; color:red;">Logout</div>
+        <div class="nav-link" onclick="App.logout()" style="margin-top:auto; color:#ff4444;">Logout</div>
     </aside>
 
     <main class="viewport">
-        <!-- HOME PAGE -->
+        <!-- HOME -->
         <section id="p-home" class="page page-active">
             <div class="card">
-                <h2>Welcome, <span id="welcome-name"></span></h2>
-                <textarea id="status-input" placeholder="What's on your mind?"></textarea>
-                <button class="btn-auth" style="width:auto; padding: 10px 30px;" onclick="App.postStatus()">Post Status</button>
+                <h2>Hello, <span id="hello-user"></span>!</h2>
+                <p style="color: var(--text-dim);">Identity verified. Your session is active within the monochrome grid.</p>
             </div>
             <div class="card">
-                <h3>My Feed</h3>
-                <div id="feed-container"></div>
+                <h3>Latest Broadcasts</h3>
+                <div id="feed">
+                    <p style="color:#444;">No global updates yet.</p>
+                </div>
             </div>
         </section>
 
-        <!-- AVATAR PAGE -->
+        <!-- AVATAR -->
         <section id="p-avatar" class="page">
-            <h2>Avatar Editor</h2>
-            <div class="card" style="display:grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+            <h2>Avatar Lab</h2>
+            <div class="card" style="display:grid; grid-template-columns: 1fr 1fr; gap: 50px;">
                 <div class="avatar-canvas">
-                    <div class="rig-main">
+                    <div class="rig">
                         <div class="head"></div><div class="arm-l"></div><div class="torso"></div><div class="arm-r"></div><div class="leg-l"></div><div class="leg-r"></div>
                     </div>
                 </div>
                 <div>
-                    <h3>Skin Tone</h3>
-                    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px;" id="skin-grid"></div>
+                    <h3>Identity Pigment</h3>
+                    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px;" id="skin-grid"></div>
                 </div>
             </div>
         </section>
 
-        <!-- DISCOVER -->
-        <section id="p-discover" class="page">
-            <h2>Discover People</h2>
-            <div class="item-grid" id="discover-grid"></div>
+        <!-- CLICKER -->
+        <section id="p-clicker" class="page">
+            <h2>G-BUX Mining</h2>
+            <div class="card">
+                <p>Click the core to generate raw data. <b>10 clicks = 1 G-BUX</b>.</p>
+                <div class="clicker-box" onclick="App.clickCore()">
+                    <div class="click-count" id="click-display">0</div>
+                    <p style="font-weight: 800; color: var(--text-dim);">TOTAL CLICKS</p>
+                </div>
+            </div>
         </section>
 
         <!-- MARKET -->
         <section id="p-market" class="page">
             <h2>Marketplace</h2>
-            <div class="item-grid" id="market-grid"></div>
+            <div class="card" style="text-align: center; color: #444;">
+                <p>Connecting to catalog database...</p>
+            </div>
         </section>
     </main>
 </div>
 
 <script>
 const App = {
-    state: JSON.parse(localStorage.getItem('goblocks_vfinal')) || null,
+    state: JSON.parse(localStorage.getItem('goblox_final_os')) || null,
+    isLoginMode: false,
+    tempClicks: 0,
 
     init() {
-        document.getElementById('auth-btn').onclick = () => this.register();
         if (this.state) this.mount();
-        this.renderStatic();
+        this.renderSkins();
     },
 
-    register() {
-        const name = document.getElementById('reg-name').value.trim();
-        if (name.length < 2) return alert("Username required.");
-        this.state = { name, skin: '#ffdbac', gbux: 500, posts: [], inventory: [] };
-        this.save();
-        this.mount();
+    toggleAuth() {
+        this.isLoginMode = !this.isLoginMode;
+        document.getElementById('auth-sub').innerText = this.isLoginMode ? "Access your identity." : "Create your grid identity.";
+        document.getElementById('auth-main-btn').innerText = this.isLoginMode ? "Log In" : "Sign Up";
+        document.getElementById('auth-switch').innerHTML = this.isLoginMode ? 
+            "Don't have an account? <b>Sign Up</b>" : "Already have an account? <b>Log In</b>";
+    },
+
+    handleAuth() {
+        const user = document.getElementById('auth-user').value.trim();
+        const pass = document.getElementById('auth-pass').value.trim();
+
+        if (user.length < 2 || pass.length < 4) return alert("Invalid credentials.");
+
+        if (this.isLoginMode) {
+            const saved = JSON.parse(localStorage.getItem(`user_${user}`));
+            if (saved && saved.pass === pass) {
+                this.state = saved;
+                this.mount();
+            } else {
+                alert("Incorrect username or password.");
+            }
+        } else {
+            if (localStorage.getItem(`user_${user}`)) return alert("Username taken.");
+            this.state = { name: user, pass: pass, skin: '#ffdbac', gbux: 0, totalClicks: 0 };
+            localStorage.setItem(`user_${user}`, JSON.stringify(this.state));
+            this.mount();
+        }
     },
 
     mount() {
         document.getElementById('auth-wall').style.display = 'none';
         document.getElementById('main-layout').classList.add('active-session');
-        document.getElementById('user-tag').innerText = this.state.name;
-        document.getElementById('welcome-name').innerText = this.state.name;
-        document.getElementById('gbux-count').innerText = this.state.gbux;
+        document.getElementById('val-user').innerText = this.state.name;
+        document.getElementById('hello-user').innerText = this.state.name;
+        this.updateStats();
+        this.nav('home');
+    },
+
+    updateStats() {
+        document.getElementById('val-gbux').innerText = this.state.gbux;
+        document.getElementById('click-display').innerText = this.state.totalClicks;
         document.documentElement.style.setProperty('--skin', this.state.skin);
-        this.renderFeed();
-        this.renderDiscover();
+        localStorage.setItem(`user_${this.state.name}`, JSON.stringify(this.state));
+        localStorage.setItem('goblox_final_os', JSON.stringify(this.state));
+    },
+
+    clickCore() {
+        this.tempClicks++;
+        this.state.totalClicks++;
+        if (this.tempClicks >= 10) {
+            this.state.gbux += 1;
+            this.tempClicks = 0;
+        }
+        this.updateStats();
     },
 
     nav(t) {
@@ -207,49 +256,23 @@ const App = {
         document.getElementById('l-' + t).classList.add('link-active');
     },
 
-    postStatus() {
-        const text = document.getElementById('status-input').value.trim();
-        if (!text) return;
-        this.state.posts.unshift({ user: this.state.name, text, time: new Date().toLocaleTimeString() });
-        document.getElementById('status-input').value = '';
-        this.save();
-        this.renderFeed();
-    },
-
-    renderFeed() {
-        const container = document.getElementById('feed-container');
-        container.innerHTML = this.state.posts.map(p => `
-            <div class="post"><b>${p.user} - ${p.time}</b>${p.text}</div>
-        `).join('');
-    },
-
-    renderStatic() {
-        const tones = ['#ffdbac', '#f1c27d', '#e0ac69', '#8d5524', '#ffffff', '#333333', '#111111', '#00ff88'];
+    renderSkins() {
+        const tones = ['#ffdbac', '#f1c27d', '#e0ac69', '#8d5524', '#ffffff', '#333', '#00ff88', '#ff4444'];
         document.getElementById('skin-grid').innerHTML = tones.map(t => 
-            `<div onclick="App.setSkin('${t}')" style="background:${t}; height:45px; cursor:pointer; border:1px solid #222;"></div>`
+            `<div onclick="App.setSkin('${t}')" style="background:${t}; height:50px; cursor:pointer; border:1px solid #222;"></div>`
         ).join('');
-
-        const items = [{n:"Top Hat", i:"🎩"}, {n:"Shades", i:"🕶️"}, {n:"Crown", i:"👑"}];
-        document.getElementById('market-grid').innerHTML = items.map(i => `
-            <div class="item-card"><div class="item-icon">${i.i}</div><b>${i.n}</b><br><small>100 G-BUX</small></div>
-        `).join('');
-    },
-
-    renderDiscover() {
-        if (!this.state) return;
-        document.getElementById('discover-grid').innerHTML = `
-            <div class="item-card"><div class="item-icon">👤</div><b>${this.state.name}</b><br><small>Online</small></div>
-        `;
     },
 
     setSkin(c) {
+        if (!this.state) return;
         this.state.skin = c;
-        document.documentElement.style.setProperty('--skin', c);
-        this.save();
+        this.updateStats();
     },
 
-    save() { localStorage.setItem('goblocks_vfinal', JSON.stringify(this.state)); },
-    logout() { localStorage.removeItem('goblocks_vfinal'); location.reload(); }
+    logout() {
+        localStorage.removeItem('goblox_final_os');
+        location.reload();
+    }
 };
 
 App.init();
